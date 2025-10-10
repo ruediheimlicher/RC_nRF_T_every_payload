@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../RC_nRF_FS_Teensy"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}

@@ -63,7 +63,7 @@ RF24 radio(CE_PIN, CSN_PIN);
 #define EEPROMEXPOSETTINGS  0x48
 
 
-#define BLINKRATE 0x00fF
+#define BLINKRATE 0x0EFF
 
 // defines for PINS
 // links
@@ -79,7 +79,7 @@ RF24 radio(CE_PIN, CSN_PIN);
 #define TASTE_ON  1
 
 
-#define BATT_PIN         A2
+#define BATT_PIN         A6
 
 
 
@@ -107,7 +107,7 @@ uint16_t throttlesekunden = 0;
 uint16_t schritt = 32;
 
 
-uint8_t PCB_BOARD = 0;
+uint8_t PCB_BOARD = 6;
 
 
 uint16_t                   impulstimearray[NUM_SERVOS] = {};
@@ -234,7 +234,7 @@ float expoquot = (ppmhi - ppmlo)/2/0x200; // umrechnen der max expo (512) auf PP
 
 // float quotarray[NUM_SERVOS] = {}; // Umrechnungsfaktor pro Pot
 
-uint8_t sinarray[127] = {127,133,139,145,151,156,162,168,173,179,184,189,194,199,204,208,212,216,220,224,227,230,233,236,238,240,242,244,245,246,247,247,247,247,246,245,244,243,241,239,237,235,232,229,226,222,218,214,210,206,201,197,192,187,181,176,170,165,159,153,148,142,136,130,124,118,112,106,100,95,89,83,78,73,67,62,57,53,48,44,40,36,32,28,25,22,19,17,15,13,11,10,9,8,7,7,7,7,8,9,10,12,14,16,18,21,24,27,30,34,38,42,46,50,55,60,65,70,75,81,86,92,98,103,109,115,121};
+//uint8_t sinarray[127] = {127,133,139,145,151,156,162,168,173,179,184,189,194,199,204,208,212,216,220,224,227,230,233,236,238,240,242,244,245,246,247,247,247,247,246,245,244,243,241,239,237,235,232,229,226,222,218,214,210,206,201,197,192,187,181,176,170,165,159,153,148,142,136,130,124,118,112,106,100,95,89,83,78,73,67,62,57,53,48,44,40,36,32,28,25,22,19,17,15,13,11,10,9,8,7,7,7,7,8,9,10,12,14,16,18,21,24,27,30,34,38,42,46,50,55,60,65,70,75,81,86,92,98,103,109,115,121};
 // MasterSlave
 uint8_t masterslavestatus = 0;
 #define MASTER                   0
@@ -281,7 +281,7 @@ uint16_t radiocounter = 0;
 
 // ********************
 // ACK data ***********
-uint8_t ackData[2] = {0};
+uint8_t ackData[4] = {0};
 // ********************
 // ********************
 
@@ -337,6 +337,8 @@ uint8_t                 sekundencounter = 0;
 elapsedMillis           sinceLastBlink = 0;
 
 elapsedMillis           paketcounter;
+elapsedMillis           sincelasttastatur;
+
 
 uint16_t                impulsdelayarray[4] = {};
 uint16_t                restzeitarray[4] = {};
@@ -369,7 +371,9 @@ void ResetData()
 ISR(TCB0_INT_vect) 
 {
    ISRcounter++;
+   //if(ISRcounter > 4)
    {
+
       ISRcounter = 0;
       // Impuls erzeugen
       
@@ -420,7 +424,8 @@ ISR(TCB0_INT_vect)
             
          }
       }
-   }
+   } // ISRcounter
+
    // Interrupt-Flag löschen
    TCB0.INTFLAGS = TCB_CAPT_bm;
    
@@ -805,6 +810,28 @@ uint8_t Joystick_Tastenwahl_33_tastatur(uint16_t Tastaturwert)
    return 0;
 }
 
+uint16_t readADC_A6() {
+  // A6 entspricht intern AIN5
+  ADC0.MUXPOS = ADC_MUXPOS_AIN5_gc;    // ← angepasst: AIN5 statt AIN4
+
+  // kleine Wartezeit (Settling)
+  for (volatile uint16_t i = 0; i < 200; ++i) {
+    __asm__ volatile("nop");
+  }
+
+  // Start der Konversion
+  ADC0.COMMAND = ADC_STCONV_bm;
+
+  // Warten bis Resultat bereit
+  while (!(ADC0.INTFLAGS & ADC_RESRDY_bm)) { }
+
+  uint16_t result = ADC0.RES;
+  ADC0.INTFLAGS = ADC_RESRDY_bm;
+
+  return result;
+}
+
+
 uint8_t Joystick_Tastenwahl_33_6(uint16_t Tastaturwert)
 {
    //return 0;
@@ -864,11 +891,11 @@ void tastenfunktion(uint16_t Tastenwert)
       {        
          if(ANZEIGE_TAST)
          {
-            Serial.print(Tastenwert);
-            Serial.print("\t");
+            //Serial.print(Tastenwert);
+            //Serial.print("\t");
             //Serial.print(tastaturcounter);
             tastaturcounter = 0;
-            Serial.print("\n");
+            //Serial.print("\n");
             return;
          }
          tastaturcounter=0x00;
@@ -894,12 +921,13 @@ void tastenfunktion(uint16_t Tastenwert)
                }
             }
             
-            
+            /*
             Serial.print("Tastenwert: ");
             Serial.print(Tastenwert);
             Serial.print("\t Taste: ");
             Serial.print(Taste);
             Serial.print("\n");
+            */
             tastaturstatus |= (1<<AKTION_OK);
             if(OLED && Taste) // Taste und Tastenwert anzeigen
             {
@@ -1061,6 +1089,8 @@ void setup()
    pinMode(LOOPLED,OUTPUT);
    
    pinMode(BATT_PIN,INPUT);
+
+
    
    pinMode(TASTATUR_PIN,INPUT);
    
@@ -1391,7 +1421,12 @@ void loop()
    tastaturwert = analogRead(TASTATUR_PIN)/2;
    //tastaturwert = readTastatur(TASTATUR_PIN);
    //tastaturwert = readTastatur(TASTATUR_PIN)/2;
-   tastenfunktion(tastaturwert);
+   if(sincelasttastatur > 2)
+   {
+      sincelasttastatur = 0;
+      tastenfunktion(tastaturwert);
+   }
+   
    
    
    
@@ -1435,9 +1470,802 @@ void loop()
          u8g2.sendBuffer();
       }
       
-   }  
+   }   // zeitintervall > 500
    
+   // Tastatur
    
+
+   if (tastaturstatus & (1<<TASTE_OK) && Taste) // Menu ansteuern
+   {
+      tastaturcounter = 0;
+      switch (Taste)
+      {
+         case 0: // null-pos, nichts tun
+         {
+            
+         }break;
+         case 1:
+         {
+            //Serial.print("T 1");   
+            switch (curr_screen)
+            {
+               case 1: //MENUSCREEN
+               {
+                  curr_screen = 5;
+                  curr_cursorspalte = 0;
+                  setModusScreen();
+                  u8g2.sendBuffer();
+                  
+               }break;
+            }     // switch curr_screen  
+         }break;
+            
+         case 2: // UP
+         {
+            ////Serial.print("T 2");
+            if (tastaturstatus & (1<<AKTION_OK))
+            {
+               //Serial.print("T 2 up*");
+               tastaturstatus &=  ~(1<<AKTION_OK);
+               tastaturstatus |= (1<<UPDATE_OK);
+               switch (curr_screen)
+               {
+                  case 0: // HOMESCREEN
+                  {
+                     
+                  }break;
+                  case 1: // T2 MENUSCREEN
+                  {
+                     if(curr_model)
+                     {
+                        curr_model--;
+                        updateMenuScreen();
+                        u8g2.sendBuffer();
+                     }
+                  }
+                  case 2: //T2 MODELLSCREEN
+                  {
+                     if(curr_funktion)
+                     {
+                        curr_funktion--;
+                        updateModellScreen();
+                        u8g2.sendBuffer();
+                     }
+                  }break;
+                  case 3: //FUNKTIONSCREEN
+                  {
+                     switch (curr_cursorspalte)
+                     {
+                        case 0:
+                        {
+                           if(curr_aktion)
+                           {
+                              curr_aktion--;
+                              updateFunktionScreen();
+                              u8g2.sendBuffer();
+                           }
+                        }break;
+                        case 1: // Level, expo up, down
+                        {
+                           //Serial.print("curr_aktion: ");
+                           //Serial.print(curr_aktion) ;
+                        }break;
+                     }// switch curr_cursorspalte                     
+                  }break;
+                     
+                  case 4: // T2 AKTIONSCREEN
+                  {
+                     switch (curr_cursorspalte)
+                     {
+                        case 0:
+                        {
+                           if(curr_wert )
+                           {
+                              curr_wert--;                              
+                           }
+                           
+                        }break;
+                        case 1: // T2 UP DOWN
+                        {
+                           uint8_t level = kanalsettingarray[curr_model][curr_funktion][1];
+                           uint8_t levelO = (level & 0xF0) >> 4;
+                           uint8_t levelU = (level & 0x0F);
+                           
+                           uint8_t expo = kanalsettingarray[curr_model][curr_funktion][2];
+                           uint8_t expoO = (expo & 0xF0) >> 4;
+                           uint8_t expoU = (expo & 0x0F);
+                           
+                           switch (curr_aktion)
+                           {
+                              case 0: //LEVEL
+                              {
+                                 switch (curr_wert)
+                                 {
+                                    case 0: // UP
+                                    {
+                                       if(levelO < 4)
+                                       {
+                                          levelO++;
+                                          savestatus = CHANGED;;
+                                       }
+                                    }break;
+                                    case 1: // DOWN
+                                    {
+                                       if (levelU < 4)
+                                       {
+                                          levelU++;
+                                          savestatus = CHANGED;;
+                                       }
+                                    }break;
+                                 } // switch curr_wert
+                                 level = (levelO << 4) | levelU;
+                                 kanalsettingarray[curr_model][curr_funktion][1] = level; 
+                              }break;
+                                 
+                              case 1: // EXPO
+                              {
+                                 switch (curr_wert)
+                                 {
+                                    case 0: // UP
+                                    {
+                                       if(expoO < 4)
+                                       {
+                                          expoO++;
+                                          savestatus = CHANGED;;
+                                       }
+                                    }break;
+                                    case 1: // DOWN
+                                    {
+                                       if (expoU < 4)
+                                       {
+                                          expoU++;
+                                          savestatus = CHANGED;;
+                                       }
+                                    }break;
+                                 }
+                                 expo = (expoO << 4) | expoU;
+                                 kanalsettingarray[curr_model][curr_funktion][2] = expo; 
+                                 
+                              }break;
+                                 
+                           }// switch curr_aktion                        
+                        }break;
+                           
+                     }// switch curr_cursorspalte
+                     updateAktionScreen();
+                     u8g2.sendBuffer();
+                  }break;
+                     
+                  case 5: // T2 UP  MODUSSCREEN
+                  {
+                     if(curr_modus )
+                     {
+                        
+                        switch (curr_modus)
+                        {
+                           case MODELL:
+                           {
+                              
+                           }break;
+
+                           case SIM:
+                           {
+
+                           }break;
+
+                           case CALIB:
+                           {
+                              calibstatus &= ~(1<<CALIB_START);
+                           }break;
+                        }// switch curr_modus
+                        curr_modus--;
+                     
+                        
+                     }
+                  }break;
+               }// switch (curr_screen)
+            }           
+         }break;
+            
+         case 3:
+         {
+            //Serial.print("T 3");   
+            switch (curr_screen)
+            {
+               case 0: // HOMESCREEN
+               {
+                  // EEPROM lesen
+                  eepromread();
+                  printeeprom(160);
+               }break;
+                  
+            } // switch curr_screen
+            
+         }break;
+            
+         case 4: // LEFT
+         {
+            ////Serial.print("T 4");            
+            if (tastaturstatus & (1<<AKTION_OK))
+            {
+               //Serial.print("T 4 left");
+               tastaturstatus &=  ~(1<<AKTION_OK);
+               tastaturstatus |= (1<<UPDATE_OK);
+               switch (curr_screen)
+               {
+                  case 0: // HOMESCREEN // Umschalten Simulator/Modell, TO DO
+                  {
+                     //if (savestatus == CHANGED)
+                     {
+                        if(curr_cursorspalte == 1)
+                        {
+                           curr_cursorspalte = 0; // Rahmen auf YES
+                           
+                           updateHomeScreen();
+                           
+                        }
+                     }
+                     
+                  }break;
+                  case 1: // MENUSCREEN
+                  {
+                     
+                  }break;
+                  case 2: // MODELLSCREEN
+                  {
+                     
+                  }break;
+                  case 3: // FUNKTIONSCREEN
+                  {
+                     switch (curr_cursorspalte)
+                     {
+                        case 0: 
+                        {
+                           updateFunktionScreen();
+                           u8g2.sendBuffer();
+                        }break;
+                        case 1: // up, down enabled
+                        {
+                           curr_cursorspalte--;
+                        }break;
+                     }// switch curr_cursorspalte
+                  }break;
+                     
+                  case 4: // AKTIONSCREEN
+                  {
+                     //Serial.print("T4 case 4: curr_screen: ");
+                     //Serial.println(curr_screen);
+                     curr_cursorspalte = 0;
+                     curr_wert = 0;
+                     updateAktionScreen();
+                     u8g2.sendBuffer();
+                  }break;
+                     
+                  case 5: // T4 LEFT ModusScreen
+                  {
+                     curr_screen = 1; // MENUSCREEN
+                     setModus();
+                     setMenuScreen();
+                     updateMenuScreen();
+                     u8g2.sendBuffer();
+                     
+                     
+                  }break;
+               }// swich curr_screen
+               
+            }
+         }break;
+            
+         case 5: // Ebene tiefer
+         {
+            if (tastaturstatus & (1<<AKTION_OK))
+            {
+               //Serial.print("T 5 in ");
+               
+               if ((curr_screen == 0) ) //&& (taste5counter < 3))
+               {
+                  tastaturstatus |= (1<<T5_WAIT); // Warten auf 3 Impulse
+                  {               
+                     taste5counter++;
+                     //Serial.print("taste5counter: ");
+                     //Serial.println(taste5counter);
+                     tastaturcounter = 300; // Mehrfachklick ermoeglichen
+                     if (taste5counter == 3)
+                     {
+                        curr_screen = 1;
+                        taste5counter = 0;
+                        tastaturstatus |= ~(1<<T5_WAIT); // Warten beendet
+                        //Serial.print("T5 setMenuScreen ");
+                        //u8g2.clear();
+                        
+                        setMenuScreen();
+                        u8g2.sendBuffer();
+                     }
+                  }
+               }
+               else //if (!(tastaturstatus & (1<<T5_WAIT))) // kein Warten
+               {
+                  taste5counter = 0;
+                  if(curr_screen < 6)
+                  {
+                     //Serial.print("T 5 klick ");
+                     //Serial.println(curr_screen);
+                     switch (curr_screen)
+                     {
+                        case 1: // MODELLSCREEN
+                        {
+                           //Serial.print("T 5 > Modellscreen curr_model: ");
+                           //Serial.println(curr_model);
+                           setModellScreen();
+                           curr_screen = 2;
+                           u8g2.sendBuffer();
+                        }break;
+                        case 2: // FUNKTIONSCREEN
+                        {
+                           //Serial.print("T 5 > FunktionScreen curr_funktion: " );
+                           //Serial.println(curr_funktion);
+                           setFunktionScreen();
+                           curr_screen = 3;
+                           u8g2.sendBuffer();
+                        }break;
+                        case 3: // AKTIONSCREEN
+                        {
+                           //Serial.print("T 5 > AktionScreen curr_aktion: " );
+                           //Serial.println(curr_aktion);
+                           setAktionScreen();
+                           curr_screen = 4;
+                           u8g2.sendBuffer();
+                        }break;
+                        case 4: 
+                        {
+                           //Serial.print("T 5 screen 4 curr_wert: ");
+                           //Serial.println(curr_wert);
+                        }break;
+
+                        case 5: // MODUS-Screen
+                        {
+                           Serial.print("T 5 screen 5 curr_modus: ");
+                           Serial.print(curr_modus);
+                           Serial.print(" T 5 screen 5 calibstatus: ");
+                           Serial.println(calibstatus);
+                          
+                           if(!(calibstatus & (1<<CALIB_START))) // calib noch nicht gesetzt
+                           {
+                              cleargrenzen();
+                              calibstatus |= (1<<CALIB_START);
+                           }
+                           else
+                           {
+                              calibstatus &= ~(1<<CALIB_START);// calib beenden
+
+                              Serial.println(" vor write: ");  
+                              printeeprom(160);
+                              eepromwrite();
+                              Serial.println(" nach write: "); 
+                              printeeprom(160);                           
+                           }
+                           
+                           
+                           updateModusScreen();
+                           u8g2.sendBuffer();
+
+                           //setCalib();
+                        }break;
+
+
+                     }// switch (curr_screen)
+                  }
+               }
+               //Serial.print("T5 end: curr_screen: ");
+               //Serial.println(curr_screen);              
+               tastaturstatus &=  ~(1<<AKTION_OK);
+               tastaturstatus |= (1<<UPDATE_OK);  
+            }
+         }break;
+            
+         case 6: // RIGHT
+         {
+            //Serial.print("T 6");
+            if (tastaturstatus & (1<<AKTION_OK))
+            {
+               //Serial.println("T 6 right");
+               tastaturstatus &=  ~(1<<AKTION_OK);
+               tastaturstatus |= (1<<UPDATE_OK);
+               switch (curr_screen)
+               {
+                  case 0: // HOMESCREEN // Umschalten Simulator/Modell, TO DO
+                  {
+                     if (savestatus == CHANGED)
+                     {
+                        if(curr_cursorspalte == 0)
+                        {
+                           curr_cursorspalte = 1; // Rahmen auf NO
+                           updateHomeScreen();
+                           
+                        }
+                     }
+                     
+                  }break;
+                  case 1: // MENUSCREEN , nach Modussrreen
+                  {
+                     {
+                        setModusScreen();
+                        curr_cursorzeile = 0;
+                        curr_cursorspalte = 0;
+                        curr_screen = 5; // MODUSSCREEN
+                        u8g2.sendBuffer();
+                     }
+                  }break;
+                  case 2: // MODELLSCREEN
+                  {
+                     
+                  }break;
+                  case 3: // FUNKTIONSCREEN
+                  {
+                     //Serial.print("T6 case 3: curr_screen: ");
+                     //Serial.println(curr_screen);
+                     switch (curr_cursorspalte)
+                     {
+                        case 0: 
+                        {
+                           curr_cursorspalte++; // max 1                        
+                           updateFunktionScreen();
+                           u8g2.sendBuffer();
+                        }break;
+                        case 1: // up, down enabled
+                        {
+                           switch (curr_aktion)
+                           {
+                              case 0: // Level
+                              {
+                                 uint8_t level = kanalsettingarray[curr_model][curr_funktion][1];
+                                 uint8_t levelO = (level & 0xF0) >> 4;
+                                 uint8_t levelU = (level & 0x0F);
+                                 //if(curr_pfeil == PFEIL_UP)
+                                 {
+                                    
+                                    //blink_cursorpos = 86<<8 | 22;
+                                    //u8g2.setDrawColor(1);
+                                    //u8g2.drawFrame(88,char_y,48,16);
+                                 }                             
+                              }break;
+                              case 1: // expo
+                              {
+                                 uint8_t expo = kanalsettingarray[curr_model][curr_funktion][2];
+                                 uint8_t expoO = (expo & 0xF0) >> 4;
+                                 uint8_t expoU = expo & 0x0F;
+                                 
+                                 
+                              }break;
+                           }// switch curr_aktion
+                        }break;
+                     }// switch curr_cursorspalte
+                  }break;
+                  case 4: // AKTIONSCREEN
+                  {
+                     //Serial.print("T6 case 4: curr_screen: ");
+                     //Serial.println(curr_screen);
+                     switch (curr_cursorspalte)
+                     {
+                        case 0:
+                        {
+                           curr_cursorspalte = 1;
+                        }break;
+                     }// switch
+                     updateAktionScreen();
+                     u8g2.sendBuffer();
+                  }break;
+                     
+                  case 5: // T6 ModusScreen
+                  {
+                     //Serial.print("T6 case 5 ModusScreen: curr_screen: ");
+                     //Serial.println(curr_screen);
+                     switch (curr_cursorzeile)
+                     {
+                        case 0: // Navigation
+                        {
+                           if(curr_cursorspalte)
+                           {
+                              curr_cursorspalte++;
+                              
+                              updateMenuScreen();
+                              u8g2.sendBuffer();
+                           }
+                        }break;
+                        case 1: // Auswahl
+                        {
+                           curr_steuerstatus = SIM;
+                           setModus();
+                        }break;
+                     }// switch curr_cursorzeile
+                  }break;
+                     
+               }// swich curr_screen  
+            }
+         }break;
+            
+         case 7:
+         {
+            if (tastaturstatus & (1<<AKTION_OK))
+            {
+               //Serial.print("T 7 back ");
+               if(curr_screen )
+               {
+                  curr_screen--;
+                  u8g2.clear();
+                  switch (curr_screen)
+                  {
+                     case 0: // HOMESCREEN
+                     {
+                        //savestatus = CHANGED;
+                        setHomeScreen();
+                     }break;
+                     case 1: // MENUSCREEN
+                     {
+                        //setSaveScreen();
+                        //  u8g2.sendBuffer();
+                        setMenuScreen();
+                     }break;
+                     case 2: // MODELLSCREEN
+                     {                 
+                        
+                        setModellScreen();
+                     }break;
+                     case 3: // FUNKTIONSCREEN
+                     {
+                        curr_aktion = 0;
+                        curr_cursorspalte = 0;
+                        setFunktionScreen();
+                     }break;
+
+                     case 4: // check
+                     {
+                        curr_screen = 0;
+                        setHomeScreen();
+
+                     }break;
+                     case 5: // MODUSSCREEN
+                     {
+
+                        setHomeScreen();
+                     }break;
+                        
+                        
+                  }// switch curr_screen
+               }
+               //Serial.print("T7 curr_screen: ");
+               //Serial.println(curr_screen);              
+               u8g2.sendBuffer();
+               tastaturstatus &=  ~(1<<AKTION_OK);
+               tastaturstatus |= (1<<UPDATE_OK); 
+               calibstatus &= ~(1<<CALIB_START);   
+            }
+         }break;
+            
+         case 8:
+         {
+            //Serial.print("T 8");
+            if (tastaturstatus & (1<<AKTION_OK))
+            {
+               //Serial.print("T 8 down");
+               tastaturstatus &=  ~(1<<AKTION_OK);
+               tastaturstatus |= (1<<UPDATE_OK);
+               switch (curr_screen)
+               {
+                  case 0: // HOMESCREEN
+                  {
+                     
+                  }break;
+                  case 1: // MENUSCREEN Modelle
+                  {
+                     if(curr_model < 5)
+                     {
+                        curr_model++;
+                        updateMenuScreen();
+                        u8g2.sendBuffer();
+                     }
+                  }break;
+                     
+                  case 2:  // MODELLSCREEN  Funktionen
+                  {
+                     if(curr_funktion < 4)
+                     {
+                        curr_funktion++;
+                        updateModellScreen();
+                        u8g2.sendBuffer();
+                     }
+                  }break;
+                     
+                  case 3:  // FUNKTIONSCREEN 
+                  {
+                     if(curr_aktion < 5)
+                     {
+                        curr_aktion++;
+                        updateFunktionScreen();
+                        u8g2.sendBuffer();
+                     }
+                  }break;
+                     
+                  case 4: // T8 AKTIONSCREEN
+                  {
+                     switch (curr_cursorspalte)
+                     {
+                        case 0:
+                        {
+                           if(curr_wert <2)
+                           {
+                              curr_wert++;
+                              updateAktionScreen();
+                              u8g2.sendBuffer();
+                           }
+                        }break;
+                        case 1: // T8 UP DOWN
+                        {
+                           uint8_t level = kanalsettingarray[curr_model][curr_funktion][1];
+                           uint8_t levelO = (level & 0xF0) >> 4;
+                           uint8_t levelU = (level & 0x0F);
+                           
+                           uint8_t expo = kanalsettingarray[curr_model][curr_funktion][2];
+                           uint8_t expoO = (expo & 0xF0) >> 4;
+                           uint8_t expoU = (expo & 0x0F);
+                           
+                           switch (curr_aktion)
+                           {
+                              case 0: //LEVEL
+                              {
+                                 switch (curr_wert)
+                                 {
+                                    case 0: // UP
+                                    {
+                                       if(levelO)
+                                       {
+                                          levelO--;
+                                          savestatus = CHANGED;;
+                                       }
+                                    }break;
+                                    case 1: // DOWN
+                                    {
+                                       if (levelU)
+                                       {
+                                          levelU--;
+                                          savestatus = CHANGED;;
+                                       }
+                                    }break;
+                                 } // switch curr_wert
+                                 level = (levelO << 4) | levelU;
+                                 kanalsettingarray[curr_model][curr_funktion][1] = level;
+                                 
+                              }break;
+                              case 1: //EXPO
+                              {
+                                 switch (curr_wert)
+                                 {
+                                    case 0: // UP
+                                    {
+                                       if(expoO)
+                                       {
+                                          expoO--;
+                                          savestatus = CHANGED;;
+                                       }
+                                    }break;
+                                    case 1: // DOWN
+                                    {
+                                       if (expoU)
+                                       {
+                                          expoU--;
+                                          savestatus = CHANGED;;
+                                       }
+                                    }break;
+                                 } // switch curr_wert
+                                 expo = (expoO << 4) | expoU;
+                                 kanalsettingarray[curr_model][curr_funktion][2] = expo;
+                                 
+                              }break;
+                                 
+                                 
+                                 
+                           }// switch curr_aktion
+                           
+                           
+                        }break;
+                     }// switch curr_cursorspalte
+                     updateAktionScreen();
+                     u8g2.sendBuffer();
+                  }break;
+                     
+                  case 5: // T8 DOWN MODUSSCREEN
+                  {
+
+                     if(curr_modus < 2)
+                     {
+                        curr_modus++;
+                        switch (curr_modus)
+                        {
+                           case MODELL:
+                           {
+
+                           }break;
+
+                           case SIM:
+                           {
+
+                           }break;
+
+                           case CALIB:
+                           {
+                              updateModusScreen();
+                              u8g2.sendBuffer();
+                           }break;
+                        }// switch curr_modus
+                        
+                        
+                        
+                     }
+                  }break;
+               }// switch (curr_screen)
+               
+               
+               
+            }          
+         }break;
+            
+         case 9:
+         {
+            Serial.print("T 9 SAVE ");  
+            
+            switch (curr_screen)
+            {
+               case 0:
+               {
+                  Serial.print("T9 savestatus: ");  
+                  Serial.print(savestatus);
+                  ////Serial.print(" curr_cursorspalte: ");  
+                  //Serial.print(curr_cursorspalte);
+                  switch (savestatus)
+                  {
+                     case 2: // CHANGED
+                     {
+                        // write to eeprom
+                        Serial.println(" vor write: ");  
+                        printeeprom(160);
+                        eepromwrite();
+                        Serial.println(" nach write: "); 
+                        printeeprom(160);
+                        savestatus = CANCEL;
+                     }break;
+                     
+                     case 1: // CANCEL
+                     {
+                        // do nothing
+                        Serial.println(" CANCEL ");  
+                        curr_cursorspalte = 0;
+                        savestatus = CANCEL;
+                     }break;
+
+                    
+                     
+                     //u8g2.sendBuffer();
+                  }   
+               }break;
+                  
+            }// switch curr_screen
+            updateHomeScreen();
+         }break;
+      }//switch (Taste)
+      if(Taste)
+      {
+         ////Serial.print("\n");
+         Taste = 0;
+         tastaturstatus &= ~(1<<TASTE_OK);
+      }
+      
+      
+      
+   }// if TASTE_OK
+
+
+
+   // end Tastatur
    
    if(loopcounter >= BLINKRATE)
    {
@@ -1448,12 +2276,12 @@ void loop()
          Serial.print(ackData[0]);
          Serial.print("\t");
          Serial.print(ackData[1]);
-         /*
+         
          Serial.print("\t2\t");
          Serial.print(ackData[2]);
          Serial.print("\t3\t");
          Serial.print(ackData[3]);
-         */
+         
       Serial.print(" \n");
       }
       switch(anzeigestatus)
@@ -1474,12 +2302,12 @@ void loop()
                //Serial.print(ppm[i]);
                //Serial.print("\t");
                Serial.print(potwertarray[i]);
-               //Serial.print("\t");
+               Serial.print("\t");
                //Serial.print(Border_Mapvar255(i, potwertarray[i],2000,1500,1000,false));
                //Serial.print(map( potwertarray[i],0,1024,2000,1000));
-               Serial.print("\t");
+               
             }
-            Serial.print("\n");
+            
          }break;
             
          case ANZEIGE_TAST:
@@ -1550,8 +2378,11 @@ void loop()
       
       //analogWrite(BUZZPIN,127);
       
-      
-      batteriespannung = analogRead(BATT_PIN);
+            //batteriespannung = readADC_A6();
+
+      batteriespannung = analogRead(A6);
+       //     batteriespannung = analogRead(A1);
+
       batteriearray[batteriemittelwertcounter] = batteriespannung;
       
       
@@ -1563,10 +2394,24 @@ void loop()
          batteriemittel += batteriearray[i];
       }
       batteriemittel /= 8;
-      //Serial.println(batteriemittel);
+         //Serial.print("\t ");
+         //Serial.print(batteriespannung);
+         //Serial.print("\t ");
+         
       
       
       UBatt = float(batteriespannung) / 154;
+
+      /*
+      Serial.print(batteriemittel);
+      Serial.print("\t");
+      Serial.print(batteriespannung);
+      Serial.print(" *\t ");
+      Serial.print(data.pitch);
+         
+      Serial.print("\n");
+      */
+
       if(TEST)
       {
          /*
@@ -1655,10 +2500,10 @@ void loop()
        u8g2.drawStr(32,42,buf0);
        */
       
-      uint8_t wertv = map(data.pitch,0,255,2,balkenvh-2); // Platz fuer 3 pixel dicke
+      //uint8_t wertv = map(data.pitch,0,255,2,balkenvh-2); // Platz fuer 3 pixel dicke
       //oled_vertikalbalken_setwert(VBX,VBY,balkenvb,balkenvh,wertv);
       
-      uint8_t werth = map(data.yaw,0,255,2,balkenhb-2); // Platz fuer 3 pixel dicke
+      //uint8_t werth = map(data.yaw,0,255,2,balkenhb-2); // Platz fuer 3 pixel dicke
       
       //oled_horizontalbalken_setwert(HBX,HBY,balkenhb,balkenhh,werth);
       
@@ -1870,7 +2715,7 @@ void loop()
          }
       } // for i
       
-      data.yaw = Border_Mapvar255(0, potwertarray[YAW],potgrenzearray[YAW][1],servomittearray[YAW],potgrenzearray[YAW][0],false);
+      data.yaw = Border_Mapvar255(YAW, potwertarray[YAW],potgrenzearray[YAW][1],servomittearray[YAW],potgrenzearray[YAW][0],false);
       
       winkelcounter+= 2;
       
@@ -1883,16 +2728,16 @@ void loop()
       //Serial.print("\t");
 
       
-      double sinfloat = 127.0 + 125.0*sin(winkel);
+      double sinfloat = 127.0 + 125.0*sin(winkel/2);
       //Serial.print(sinfloat);
       //Serial.print("\t");
-      //data.pitch = Border_Mapvar255(1, potwertarray[PITCH],potgrenzearray[PITCH][1],servomittearray[PITCH],potgrenzearray[PITCH][0],false);
+      data.pitch = Border_Mapvar255(PITCH, potwertarray[PITCH],potgrenzearray[PITCH][1],servomittearray[PITCH],potgrenzearray[PITCH][0],false);
       //data.pitch = int(sinfloat);
 
-      data.pitch = int(sinfloat);
+      
       //Serial.println(data.pitch);
       //data.pitch = servomittearray[PITCH] + 
-       data.yaw = int(sinfloat);
+       
        //Serial.println(data.yaw);
       // if(curr_model == 0)
       if(!(calibstatus &(1<<CALIB_START) )  )
@@ -1901,13 +2746,17 @@ void loop()
          potgrenzearray[ROLL][1] = servomittearray[ROLL];
       }
       
-      data.roll = Border_Mapvar255(2,potwertarray[ROLL],potgrenzearray[ROLL][1],servomittearray[ROLL],potgrenzearray[ROLL][0],false);
+      data.roll = Border_Mapvar255(ROLL,potwertarray[ROLL],potgrenzearray[ROLL][1],servomittearray[ROLL],potgrenzearray[ROLL][0],false);
       
       
       //uint16_t throttlemitte = servomittearray[THROTTLE];
       //data.throttle = Throttle_Map(potwertarray[THROTTLE],throttlemitte, POTHI,0,255, false );   
       data.throttle = Throttle_Map255(potwertarray[THROTTLE],servomittearray[THROTTLE], potgrenzearray[THROTTLE][0],10,127, false ); // nur eine haelfte 
       
+      //data.yaw = 13;
+      //data.pitch = int(sinfloat); 
+      //data.roll = 14;
+      //data.throttle = 15;
       
       //data.throttle = Border_Map(potwertarray[THROTTLE],0, 340,570, false );      // Potentiometer
       
@@ -1924,13 +2773,18 @@ void loop()
          if (radio.isAckPayloadAvailable()) 
          {
             radio.read(&ackData, sizeof(ackData));
-            
+            /*
              //Serial.print("ACK erhalten: ");
-             //Serial.print("\t0\t");
+             //Serial.print("\t");
              Serial.print(ackData[0]);
              Serial.print("\t");
              Serial.print(ackData[1]);
+              Serial.print("\t");
+              Serial.print(ackData[2]);
+             Serial.print("\t");
+             Serial.print(ackData[3]);
             Serial.print(" \n");
+            */
          } 
          else 
          {
