@@ -253,6 +253,7 @@ void resetRegister(void)
 
 void setHomeScreen()
 {
+   
    u8g2.clear();
    u8g2.setFont(u8g2_font_t0_22_mr);  
    u8g2.setCursor(TAB0, 16);
@@ -263,7 +264,6 @@ void setHomeScreen()
    u8g2.sendBuffer();
    curr_cursorspalte = 0;
    curr_cursorzeile = 0;
-
 }
 
 void updateHomeScreen()
@@ -301,7 +301,8 @@ void updateHomeScreen()
 
       //savestatus = 0xFF;
       
-      
+       
+
       //u8g2.sendBuffer();
 
    
@@ -354,14 +355,6 @@ void updateHomeScreen()
    uint8_t la = kanalsettingarray[0][0][1] & 0x07;
    uint8_t  lb = (kanalsettingarray[0][0][1] & 0x70)>>4;
 
-   //u8g2.setCursor(4,58);
-   //u8g2.print(la);
-   //u8g2.setCursor(24,58);
-   //u8g2.print(lb);
-
-
-   //u8g2.setCursor(44,56);
-   //u8g2.print(kanalsettingarray[0][0][2]);
    u8g2.sendBuffer();
 }
 
@@ -380,19 +373,22 @@ void setMenuScreen()
    // Modus
    u8g2.setFont(u8g2_font_t0_15_mr); 
    u8g2.drawStr(112,40,"Modus");
-
-   
+ 
    u8g2.setFont(u8g2_font_t0_15_mr); 
    u8g2.drawStr(char_x,char_y +charh,"MODELL");
    
-
    u8g2.setFontDirection(0);
 
-   // Pfeil Modus
+   // Pfeil zu Modus
 
-   u8g2.setFont(u8g2_font_unifont_t_symbols);
-   u8g2.drawGlyph(100,55, 0x23F5);
-   u8g2.setFont(u8g2_font_t0_15_mr);  
+   u8g2.drawXBM(104,45,8,16,pfeil_right);
+   
+   //
+
+
+
+
+   //u8g2.setFont(u8g2_font_t0_15_mr);  
    
    updateMenuScreen();
    
@@ -450,8 +446,10 @@ void setModellScreen() // Auswahl Funktion fuer ausgewaehltes Modell
    u8g2.drawStr(char_x,char_y + charh, ModelTable[curr_model]);
    u8g2.setFontDirection(0);
    char_y = taby[3];
+   
    updateModellScreen();
    //u8g2.drawStr(2,char_y,SettingTable[1]);
+
 
 }
 
@@ -483,7 +481,7 @@ void updateModellScreen(void)
       i++;
    }
    u8g2.setFont(u8g2_font_t0_15_mr);  
-
+   
 }
 
 void setFunktionScreen() // Auswahl Aktion
@@ -518,15 +516,21 @@ void updateFunktionScreen()
    
    u8g2.setDrawColor(1);
    u8g2.drawStr(char_x+2,char_y + charh, AktionTable[0]);
-   u8g2.drawStr(char_x+2,char_y + charh + 36, AktionTable[1]);
+   u8g2.drawStr(char_x+2,char_y + charh + 34, AktionTable[1]);
    
    u8g2.setFont(u8g2_font_unifont_t_symbols);
-   
-   u8g2.drawGlyph(86,char_y + 6, 0x23F6);
-   u8g2.drawGlyph(86,char_y + 22, 0x23F7);
+   //u8g2.drawGlyph(88,char_y -4, 0x23F6);
+   u8g2.drawXBM(88,char_y-2,16,8,pfeil_up);
 
-   u8g2.drawGlyph(86,char_y + 6 + 36, 0x23F6);
-   u8g2.drawGlyph(86,char_y + 22 + 36, 0x23F7);
+
+   //u8g2.drawGlyph(88,char_y + 22, 0x23F7);
+   u8g2.drawXBM(88,char_y + 12,16,8,pfeil_down);
+
+  // u8g2.drawGlyph(86,char_y + 6 + 36, 0x23F6);
+   u8g2.drawXBM(88,char_y+32 ,16,8,pfeil_up);
+
+   //u8g2.drawGlyph(88,char_y + 12 + 36, 0x23F7);
+   u8g2.drawXBM(88,char_y+46 ,16,8,pfeil_down);
       
    u8g2.setFont(u8g2_font_t0_15_mr);  
    ////Serial.print(" curr_funktion: ");
@@ -748,14 +752,16 @@ void setModusScreen(void)
    u8g2.setFontDirection(3);
    u8g2.drawStr(char_x,char_y + charh,"MODUS");
    // Modus
-   u8g2.setFont(u8g2_font_t0_12_mr); 
+   u8g2.setFont(u8g2_font_t0_14_mr); 
    u8g2.drawStr(12,40,"Menu");
    u8g2.setFontDirection(0);
    
    // Pfeil Modus
 
-   u8g2.setFont(u8g2_font_unifont_t_symbols);
-   u8g2.drawGlyph(2,55, 0x23F4);
+   //u8g2.setFont(u8g2_font_unifont_t_symbols);
+   
+   //u8g2.drawGlyph(2,55, 0x23F4);
+   u8g2.drawXBM(2,44,8,16,pfeil_left);
    u8g2.setFont(u8g2_font_t0_15_mr);  
    
    char_x = 48;
