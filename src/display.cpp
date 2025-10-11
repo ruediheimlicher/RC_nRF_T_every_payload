@@ -116,46 +116,46 @@ U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/U8X8_PIN_NONE);
 
 void initDisplay()
 {
-  u8g2.begin();
+  //u8g2begin();
   uint8_t c = 0;
 }
 
  void oled_fill(uint8_t x,uint8_t y,uint8_t l)
 {
-   //u8g2.setDrawColor(0);
-   u8g2.drawBox(x,y-charh,l,charh+4);
-   //u8g2.setDrawColor(1);
-   u8g2.sendBuffer();
+   ////u8g2setDrawColor(0);
+   //u8g2drawBox(x,y-charh,l,charh+4);
+   ////u8g2setDrawColor(1);
+   //u8g2sendBuffer();
 }
 
 
 
 void oled_setInt(uint8_t x,uint8_t y, uint16_t data)
 {
-   u8g2.setCursor(x,y);
-   u8g2.print(data);
-   u8g2.sendBuffer();
+   //u8g2setCursor(x,y);
+   //u8g2print(data);
+   //u8g2sendBuffer();
 
 }
 
 void oled_delete(uint8_t x,uint8_t y,uint8_t l)
 {
-   u8g2.setDrawColor(0);
-   u8g2.drawBox(x,y-charh,l,charh+4);
-   u8g2.setDrawColor(1);
-   //u8g2.sendBuffer();
+   //u8g2setDrawColor(0);
+   //u8g2drawBox(x,y-charh,l,charh+4);
+   //u8g2setDrawColor(1);
+   ////u8g2sendBuffer();
 }
 
 void oled_frame(uint8_t x,uint8_t y,uint8_t l)
 {
-   //u8g2.setDrawColor(0);
-   u8g2.drawFrame(x,y-charh,l,charh+4);
-   //u8g2.setDrawColor(1);
-   u8g2.sendBuffer();
+   ////u8g2setDrawColor(0);
+   //u8g2drawFrame(x,y-charh,l,charh+4);
+   ////u8g2setDrawColor(1);
+   //u8g2sendBuffer();
 }
 void oled_vertikalbalken(uint8_t x,uint8_t y, uint8_t b, uint8_t h)
 {
-   u8g2.drawFrame(x,y,b,h);
+   //u8g2drawFrame(x,y,b,h);
 
 
 }
@@ -169,13 +169,13 @@ void oled_vertikalbalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint8
   ////Serial.print("\n");
   
   
-  u8g2.setDrawColor(0);
-  u8g2.drawBox(x+1,y+1,b-2,h-2);
-  u8g2.setDrawColor(1);
-  //u8g2.drawBox(x+7,y+1,b-2,h-2);
-  u8g2.drawHLine(x,y+h-wert,b);
-  u8g2.drawHLine(x,y+h-wert-1,b);
-  u8g2.drawHLine(x,y+h-wert+1,b);
+  //u8g2setDrawColor(0);
+  //u8g2drawBox(x+1,y+1,b-2,h-2);
+  //u8g2setDrawColor(1);
+  ////u8g2drawBox(x+7,y+1,b-2,h-2);
+  //u8g2drawHLine(x,y+h-wert,b);
+  //u8g2drawHLine(x,y+h-wert-1,b);
+  //u8g2drawHLine(x,y+h-wert+1,b);
 
 }
 
@@ -183,18 +183,18 @@ void oled_batteriebalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint1
 {
  uint8_t anzeige = map(wert-30,0,12,0,h); // Bereich 3-4.2V, 1.2V
  uint8_t min = map(2,0,12,0,h);
-  u8g2.setDrawColor(0);
-  u8g2.drawBox(x+1,y+1,b-2,h-2);
-  u8g2.setDrawColor(1);
-  //u8g2.drawBox(x+7,y+1,b-2,h-2);
-  //u8g2.drawHLine(x,y+h-wert,b);
-  //u8g2.drawHLine(x,y+h-wert-1,b);
-  //u8g2.drawHLine(x,y+h-wert+1,b);
-  u8g2.drawBox(x+1,y+h-anzeige,b-2,anzeige);
-  u8g2.setDrawColor(0);
-  u8g2.drawHLine(x,y+h-min,b);
-  u8g2.drawHLine(x,y+h-min-1,b);
-  u8g2.setDrawColor(1);
+  //u8g2setDrawColor(0);
+  //u8g2drawBox(x+1,y+1,b-2,h-2);
+  //u8g2setDrawColor(1);
+  ////u8g2drawBox(x+7,y+1,b-2,h-2);
+  ////u8g2drawHLine(x,y+h-wert,b);
+  ////u8g2drawHLine(x,y+h-wert-1,b);
+  ////u8g2drawHLine(x,y+h-wert+1,b);
+  //u8g2drawBox(x+1,y+h-anzeige,b-2,anzeige);
+  //u8g2setDrawColor(0);
+  //u8g2drawHLine(x,y+h-min,b);
+  //u8g2drawHLine(x,y+h-min-1,b);
+  //u8g2setDrawColor(1);
 
        // Batt
       //sprintf(buf1, "%1.1f", UBatt);
@@ -205,15 +205,15 @@ void oled_batteriebalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint1
 
 void oled_setBatterieWert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,float wert)
 {
-      u8g2.setCursor(x,y);
-      u8g2.setDrawColor(0);
-      u8g2.print(wert,1);
-      u8g2.setDrawColor(1);
+      //u8g2setCursor(x,y);
+      //u8g2setDrawColor(0);
+      //u8g2print(wert,1);
+      //u8g2setDrawColor(1);
 }
 
 void oled_horizontalbalken(uint8_t x,uint8_t y, uint8_t b, uint8_t h)
 {
-   u8g2.drawFrame(x,y,b,h);
+   //u8g2drawFrame(x,y,b,h);
 }
 void oled_horizontalbalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint8_t wert)
 {
@@ -224,17 +224,17 @@ void oled_horizontalbalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uin
   ////Serial.print("\n");
   
 
-  u8g2.setDrawColor(0);
-  u8g2.drawBox(x+1,y+1,b-2,h-2);
+  //u8g2setDrawColor(0);
+  //u8g2drawBox(x+1,y+1,b-2,h-2);
 
  
 
-  u8g2.setDrawColor(1);
-  //u8g2.drawBox(x+7,y+1,b-2,h-2);
+  //u8g2setDrawColor(1);
+  ////u8g2drawBox(x+7,y+1,b-2,h-2);
   //return;
-  u8g2.drawVLine(x+b-wert,y,h);
-  //u8g2.drawHLine(x+b-wert-1,y,h);
-  //u8g2.drawHLine(x+b-wert+1,y,h);
+  //u8g2drawVLine(x+b-wert,y,h);
+  ////u8g2drawHLine(x+b-wert-1,y,h);
+  ////u8g2drawHLine(x+b-wert+1,y,h);
 
 }
 
@@ -254,14 +254,14 @@ void resetRegister(void)
 void setHomeScreen()
 {
    
-   u8g2.clear();
-   u8g2.setFont(u8g2_font_t0_22_mr);  
-   u8g2.setCursor(TAB0, 16);
-   //u8g2.print(F("nRF24 T"));
-   u8g2.print(ModelTable[curr_model]);
-   u8g2.setFont(u8g2_font_t0_15_mr);  
+   //u8g2clear();
+   //u8g2setFont(u8g2_font_t0_22_mr);  
+   //u8g2setCursor(TAB0, 16);
+   ////u8g2print(F("nRF24 T"));
+   //u8g2print(ModelTable[curr_model]);
+   //u8g2setFont(u8g2_font_t0_15_mr);  
    oled_vertikalbalken(BATTX,BATTY,BATTB,BATTH);
-   u8g2.sendBuffer();
+   //u8g2sendBuffer();
    curr_cursorspalte = 0;
    curr_cursorzeile = 0;
 }
@@ -271,124 +271,124 @@ void updateHomeScreen()
  
    if(savestatus == CHANGED)
    {
-      charh = u8g2.getMaxCharHeight()-1;
-      u8g2.setCursor(4,56);
-      u8g2.drawStr(4,62,"SAVE?");
-      //u8g2.setFontMode(0);
-      //u8g2.setDrawColor(0);
-      u8g2.drawStr(48,48 + charh,"Y" );
+      //charh = //u8g2getMaxCharHeight()-1;
+      //u8g2setCursor(4,56);
+      //u8g2drawStr(4,62,"SAVE?");
+      ////u8g2setFontMode(0);
+      ////u8g2setDrawColor(0);
+      //u8g2drawStr(48,48 + charh,"Y" );
       
-      //u8g2.setFontMode(0);
-      u8g2.setDrawColor(1);
-      u8g2.drawStr(66,48 + charh,"N");
+      ////u8g2setFontMode(0);
+      //u8g2setDrawColor(1);
+      //u8g2drawStr(66,48 + charh,"N");
 
       if(curr_cursorspalte ==0)
       {
-         u8g2.drawFrame(45,48,16,16);
-         u8g2.setDrawColor(0);
-         u8g2.drawFrame(62,48,16,16);
-         u8g2.setDrawColor(1);
+         //u8g2drawFrame(45,48,16,16);
+         //u8g2setDrawColor(0);
+         //u8g2drawFrame(62,48,16,16);
+         //u8g2setDrawColor(1);
       }
       else
       {
-         u8g2.setDrawColor(1);
-         u8g2.drawFrame(62,48,16,16);
+         //u8g2setDrawColor(1);
+         //u8g2drawFrame(62,48,16,16);
          
-         u8g2.setDrawColor(0);
-         u8g2.drawFrame(45,48,16,16);
-         u8g2.setDrawColor(1);
+         //u8g2setDrawColor(0);
+         //u8g2drawFrame(45,48,16,16);
+         //u8g2setDrawColor(1);
       }
 
       //savestatus = 0xFF;
       
        
 
-      //u8g2.sendBuffer();
+      ////u8g2sendBuffer();
 
    
    }
    else if (savestatus == CANCEL)
    {
       
-      u8g2.setDrawColor(0);
-      u8g2.drawBox(4,46,80,18);
-      u8g2.setDrawColor(1);
-      u8g2.sendBuffer();
+      //u8g2setDrawColor(0);
+      //u8g2drawBox(4,46,80,18);
+      //u8g2setDrawColor(1);
+      //u8g2sendBuffer();
       savestatus = 1;
    }
 
       char buf0[4];
 
       // Yaw
-      //u8g2.setCursor(4,30);
-      //u8g2.print(data.yaw);
+      ////u8g2setCursor(4,30);
+      ////u8g2print(data.yaw);
       sprintf(buf0, "%3d", data.yaw);
-      u8g2.drawStr(TAB0,36,buf0);
+      //u8g2drawStr(TAB0,36,buf0);
       
       // Pitch
-     // u8g2.setCursor(36,30);
-     // u8g2.print(data.pitch);
+     // //u8g2setCursor(36,30);
+     // //u8g2print(data.pitch);
       sprintf(buf0, "%3d", data.pitch);
-      u8g2.drawStr(30,36,buf0);
+      //u8g2drawStr(30,36,buf0);
 
       // Roll
-      //u8g2.setCursor(4,46);
-      //u8g2.print(data.roll);
+      ////u8g2setCursor(4,46);
+      ////u8g2print(data.roll);
       sprintf(buf0, "%3d", data.roll);
-      u8g2.drawStr(TAB0,48,buf0);
+      //u8g2drawStr(TAB0,48,buf0);
       
       // Throttle
-      //u8g2.setCursor(36,46);
-      //u8g2.print(data.throttle);
+      ////u8g2setCursor(36,46);
+      ////u8g2print(data.throttle);
       sprintf(buf0, "%3d", data.throttle);
-      u8g2.drawStr(30,48,buf0);
+      //u8g2drawStr(30,48,buf0);
      
       uint8_t p = curr_model;
 
    oled_batteriebalken_setwert(BATTX,BATTY,BATTB,BATTH,batterieanzeige);
-   u8g2.setFont(u8g2_font_t0_14_mr);  
+   //u8g2setFont(u8g2_font_t0_14_mr);  
    
    oled_setBatterieWert(BATTX,BATTY+BATTH+16,BATTB,26,UBatt);
 
-   u8g2.setFont(u8g2_font_t0_15_mr);  
+   //u8g2setFont(u8g2_font_t0_15_mr);  
    //
    uint8_t la = kanalsettingarray[0][0][1] & 0x07;
    uint8_t  lb = (kanalsettingarray[0][0][1] & 0x70)>>4;
 
-   u8g2.sendBuffer();
+   //u8g2sendBuffer();
 }
 
 void setMenuScreen()
 {
-   u8g2.clear();
+   //u8g2clear();
    resetRegister();
    //blink_cursorpos=0xFFFF;
-   charh = u8g2.getMaxCharHeight()-1;
+   charh = //u8g2getMaxCharHeight()-1;
 
    char_x = 24;
    char_y = 45;
-   u8g2.setDrawColor(1);
-   u8g2.setFontDirection(3);
+   //u8g2setDrawColor(1);
+   //u8g2setFontDirection(3);
 
    // Modus
-   u8g2.setFont(u8g2_font_t0_15_mr); 
-   u8g2.drawStr(112,40,"Modus");
+   //u8g2setFont(u8g2_font_t0_15_mr); 
+   //u8g2drawStr(112,40,"Modus");
  
-   u8g2.setFont(u8g2_font_t0_15_mr); 
-   u8g2.drawStr(char_x,char_y +charh,"MODELL");
+   //u8g2setFont(u8g2_font_t0_15_mr); 
+   //u8g2drawStr(char_x,char_y +charh,"MODELL");
    
-   u8g2.setFontDirection(0);
+   //u8g2setFontDirection(0);
 
    // Pfeil zu Modus
 
-   u8g2.drawXBM(104,45,8,16,pfeil_right);
+   //u8g2drawXBM(104,45,8,16,pfeil_right);
    
    //
 
 
 
 
-   //u8g2.setFont(u8g2_font_t0_15_mr);  
+   ////u8g2setFont(u8g2_font_t0_15_mr);  
    
    updateMenuScreen();
    
@@ -402,32 +402,32 @@ void updateMenuScreen() // Liste der Modelle
    
    char_y = 2;
    uint8_t i = 0;
-   charh = u8g2.getMaxCharHeight()-1;
+   //charh = //u8g2getMaxCharHeight()-1;
    char_x = 36;
    while (char_y < 64)
    {
       if(i==curr_model)
       {
-         u8g2.setDrawColor(1);
-         u8g2.drawFrame(char_x,char_y,64,18);
-         //u8g2.setDrawColor(1);
-         //u8g2.drawStr(char_x+2,char_y + charh, ModelTable[i]);
-         //u8g2.drawButtonUTF8(char_x,char_y, U8G2_BTN_BW1, 50, 1, 1, ModelTable[i]);
+         //u8g2setDrawColor(1);
+         //u8g2drawFrame(char_x,char_y,64,18);
+         ////u8g2setDrawColor(1);
+         ////u8g2drawStr(char_x+2,char_y + charh, ModelTable[i]);
+         ////u8g2drawButtonUTF8(char_x,char_y, U8G2_BTN_BW1, 50, 1, 1, ModelTable[i]);
 
       }
       else
       {
-         u8g2.setDrawColor(0);
-         u8g2.drawFrame(char_x,char_y,64,18);
-         //u8g2.setDrawColor(1);
-         //u8g2.drawStr(char_x+2,char_y + charh, ModelTable[i]);
+         //u8g2setDrawColor(0);
+         //u8g2drawFrame(char_x,char_y,64,18);
+         ////u8g2setDrawColor(1);
+         ////u8g2drawStr(char_x+2,char_y + charh, ModelTable[i]);
          //8g2.drawButtonUTF8(char_x,char_y, U8G2_BTN_BW0, 50, 1, 1, ModelTable[i]);
 
       }
-      u8g2.setDrawColor(1);
-      u8g2.drawStr(char_x+2,char_y + charh-1, ModelTable[i]);
-      //u8g2.drawFrame(char_x,char_y,50,24);
-      //u8g2.drawStr(char_x+2,char_y,ModelTable[i]);
+      //u8g2setDrawColor(1);
+      //u8g2drawStr(char_x+2,char_y + charh-1, ModelTable[i]);
+      ////u8g2drawFrame(char_x,char_y,50,24);
+      ////u8g2drawStr(char_x+2,char_y,ModelTable[i]);
       char_y += menuh;
       i++;
    }
@@ -435,20 +435,20 @@ void updateMenuScreen() // Liste der Modelle
 
 void setModellScreen() // Auswahl Funktion fuer ausgewaehltes Modell
 {
-   u8g2.clear();
+   //u8g2clear();
    resetRegister();
    //blink_cursorpos=0xFFFF;
    char_x = 36;
    char_y = 45;
-   //u8g2.drawFrame(char_y,char_y,64,18);
-   u8g2.setDrawColor(1);
-   u8g2.setFontDirection(3);
-   u8g2.drawStr(char_x,char_y + charh, ModelTable[curr_model]);
-   u8g2.setFontDirection(0);
+   ////u8g2drawFrame(char_y,char_y,64,18);
+   //u8g2setDrawColor(1);
+   //u8g2setFontDirection(3);
+   //u8g2drawStr(char_x,char_y + charh, ModelTable[curr_model]);
+   //u8g2setFontDirection(0);
    char_y = taby[3];
    
    updateModellScreen();
-   //u8g2.drawStr(2,char_y,SettingTable[1]);
+   ////u8g2drawStr(2,char_y,SettingTable[1]);
 
 
 }
@@ -457,45 +457,45 @@ void updateModellScreen(void)
 {
    char_y = 4;
    uint8_t i = 0;
-   u8g2.setFont(u8g2_font_t0_14_mr);  
-   charh = u8g2.getMaxCharHeight()-1;
+   //u8g2setFont(u8g2_font_t0_14_mr);  
+   //charh = //u8g2getMaxCharHeight()-1;
    char_x = 48;
    while (char_y < 64)
    {
-       u8g2.setDrawColor(1);
-      u8g2.drawStr(char_x+2,char_y + charh, FunktionTable[i]);
+       //u8g2setDrawColor(1);
+      //u8g2drawStr(char_x+2,char_y + charh, FunktionTable[i]);
       if(i==curr_funktion)
       {
-         u8g2.setDrawColor(1);
-         u8g2.drawFrame(char_x,char_y,64,14);
+         //u8g2setDrawColor(1);
+         //u8g2drawFrame(char_x,char_y,64,14);
          
       }
       else
       {
-         u8g2.setDrawColor(0);
-         u8g2.drawFrame(char_x,char_y,64,14);
-         u8g2.setDrawColor(1);
+         //u8g2setDrawColor(0);
+         //u8g2drawFrame(char_x,char_y,64,14);
+         //u8g2setDrawColor(1);
       }
    
       char_y += 16;
       i++;
    }
-   u8g2.setFont(u8g2_font_t0_15_mr);  
+   //u8g2setFont(u8g2_font_t0_15_mr);  
    
 }
 
 void setFunktionScreen() // Auswahl Aktion
 {
-   u8g2.clear();
+   //u8g2clear();
    resetRegister();
    //blink_cursorpos=0xFFFF;
    char_x = 18;
    char_y = 45;
-   //u8g2.drawFrame(char_y,char_y,64,18);
-   u8g2.setDrawColor(1);
-   u8g2.setFontDirection(3);
-   u8g2.drawStr(char_x,char_y + charh,FunktionTable[curr_funktion]);
-   u8g2.setFontDirection(0);
+   ////u8g2drawFrame(char_y,char_y,64,18);
+   //u8g2setDrawColor(1);
+   //u8g2setFontDirection(3);
+   //u8g2drawStr(char_x,char_y + charh,FunktionTable[curr_funktion]);
+   //u8g2setFontDirection(0);
    updateFunktionScreen();
 }// setFunktionScreen
 
@@ -503,9 +503,9 @@ void updateFunktionScreen()
 {
    char_y = 4;
    uint8_t i = 0;
-   //u8g2.setFont(u8g2_font_t0_14_mr);  
-   u8g2.setFont(u8g2_font_t0_15_mr);  
-   charh = u8g2.getMaxCharHeight()-1;
+   ////u8g2setFont(u8g2_font_t0_14_mr);  
+   //u8g2setFont(u8g2_font_t0_15_mr);  
+   //charh = //u8g2getMaxCharHeight()-1;
    char_x = 36;
 
    uint8_t feldx = 110;
@@ -514,25 +514,25 @@ void updateFunktionScreen()
    uint8_t feldh = 16;
    uint8_t fkt = 0;
    
-   u8g2.setDrawColor(1);
-   u8g2.drawStr(char_x+2,char_y + charh, AktionTable[0]);
-   u8g2.drawStr(char_x+2,char_y + charh + 34, AktionTable[1]);
+   //u8g2setDrawColor(1);
+   //u8g2drawStr(char_x+2,char_y + charh, AktionTable[0]);
+   //u8g2drawStr(char_x+2,char_y + charh + 34, AktionTable[1]);
    
-   u8g2.setFont(u8g2_font_unifont_t_symbols);
-   //u8g2.drawGlyph(88,char_y -4, 0x23F6);
-   u8g2.drawXBM(88,char_y-2,16,8,pfeil_up);
+   //u8g2setFont(u8g2_font_unifont_t_symbols);
+   ////u8g2drawGlyph(88,char_y -4, 0x23F6);
+   //u8g2drawXBM(88,char_y-2,16,8,pfeil_up);
 
 
-   //u8g2.drawGlyph(88,char_y + 22, 0x23F7);
-   u8g2.drawXBM(88,char_y + 12,16,8,pfeil_down);
+   ////u8g2drawGlyph(88,char_y + 22, 0x23F7);
+   //u8g2drawXBM(88,char_y + 12,16,8,pfeil_down);
 
-  // u8g2.drawGlyph(86,char_y + 6 + 36, 0x23F6);
-   u8g2.drawXBM(88,char_y+32 ,16,8,pfeil_up);
+  // //u8g2drawGlyph(86,char_y + 6 + 36, 0x23F6);
+   //u8g2drawXBM(88,char_y+32 ,16,8,pfeil_up);
 
-   //u8g2.drawGlyph(88,char_y + 12 + 36, 0x23F7);
-   u8g2.drawXBM(88,char_y+46 ,16,8,pfeil_down);
+   ////u8g2drawGlyph(88,char_y + 12 + 36, 0x23F7);
+   //u8g2drawXBM(88,char_y+46 ,16,8,pfeil_down);
       
-   u8g2.setFont(u8g2_font_t0_15_mr);  
+   //u8g2setFont(u8g2_font_t0_15_mr);  
    ////Serial.print(" curr_funktion: ");
    ////Serial.println(curr_funktion);
    
@@ -547,15 +547,15 @@ void updateFunktionScreen()
    uint8_t levelU = (level & 0x0F);
    uint8_t expoO = (expo & 0xF0) >> 4;
    uint8_t expoU = expo & 0x0F;
-   u8g2.setCursor(itemtab[6], char_y + 6);
-   u8g2.print(levelO);
-   u8g2.setCursor(itemtab[6], char_y + 22);
-   u8g2.print(levelU);
+   //u8g2setCursor(itemtab[6], char_y + 6);
+   //u8g2print(levelO);
+   //u8g2setCursor(itemtab[6], char_y + 22);
+   //u8g2print(levelU);
 
-   u8g2.setCursor(itemtab[6], char_y + 36 + 6);
-   u8g2.print(expoO);
-   u8g2.setCursor(itemtab[6], char_y + 36 + 22);
-   u8g2.print(expoU);
+   //u8g2setCursor(itemtab[6], char_y + 36 + 6);
+   //u8g2print(expoO);
+   //u8g2setCursor(itemtab[6], char_y + 36 + 22);
+   //u8g2print(expoU);
 
    while (char_y < 64)
    {
@@ -563,15 +563,15 @@ void updateFunktionScreen()
 
       if(i==curr_aktion)
       {
-         u8g2.setDrawColor(1);
-         u8g2.drawFrame(char_x,char_y,48,16);
+         //u8g2setDrawColor(1);
+         //u8g2drawFrame(char_x,char_y,48,16);
          
       }
       else
       {
-         u8g2.setDrawColor(0);
-         u8g2.drawFrame(char_x,char_y,48,16);
-         u8g2.setDrawColor(1);
+         //u8g2setDrawColor(0);
+         //u8g2drawFrame(char_x,char_y,48,16);
+         //u8g2setDrawColor(1);
       }
        switch (curr_cursorspalte)
       {
@@ -590,23 +590,23 @@ void updateFunktionScreen()
       i++;
    }
 
-   u8g2.setFont(u8g2_font_t0_15_mr);  
+   //u8g2setFont(u8g2_font_t0_15_mr);  
 
 }// updateFunktionScreen
 
 void setAktionScreen()
 {
-   u8g2.clear();
+   //u8g2clear();
    
    resetRegister();
    //blink_cursorpos=0xFFFF;
    char_x = 18;
    char_y = 45;
-   u8g2.setFont(u8g2_font_t0_15_mr);
-   u8g2.setDrawColor(1);
-   u8g2.setFontDirection(3);
-   u8g2.drawStr(char_x,char_y + charh,FunktionTable[curr_funktion]); // "YAW"   
-   u8g2.setFontDirection(0);
+   //u8g2setFont(u8g2_font_t0_15_mr);
+   //u8g2setDrawColor(1);
+   //u8g2setFontDirection(3);
+   //u8g2drawStr(char_x,char_y + charh,FunktionTable[curr_funktion]); // "YAW"   
+   //u8g2setFontDirection(0);
    
    updateAktionScreen();
 }
@@ -620,10 +620,10 @@ void updateAktionScreen()
 
    char_y = 4;
    uint8_t i = 0;
-   u8g2.setFont(u8g2_font_t0_15_mr);  
-   charh = u8g2.getMaxCharHeight()-1;
+   //u8g2setFont(u8g2_font_t0_15_mr);  
+   //charh = //u8g2getMaxCharHeight()-1;
    char_x = 36;
-   u8g2.drawStr(char_x,char_y + charh, AktionTable[curr_aktion]);
+   //u8g2drawStr(char_x,char_y + charh, AktionTable[curr_aktion]);
 
    switch (curr_aktion)
    {
@@ -635,41 +635,41 @@ void updateAktionScreen()
          char_x += 8;
          char_y += 24;
          uint8_t dy = 20; // Abstand 2. Zeile
-         u8g2.drawStr(char_x,char_y + charh,"UP");
+         //u8g2drawStr(char_x,char_y + charh,"UP");
         
-         u8g2.setCursor(char_x + 48,char_y + charh);
-         u8g2.print(levelO);
+         //u8g2setCursor(char_x + 48,char_y + charh);
+         //u8g2print(levelO);
 
-         u8g2.drawStr(char_x,char_y + charh + dy,"DOWN");
-         u8g2.setCursor(char_x + 48 ,char_y + charh + dy);
-         u8g2.print(levelU);
+         //u8g2drawStr(char_x,char_y + charh + dy,"DOWN");
+         //u8g2setCursor(char_x + 48 ,char_y + charh + dy);
+         //u8g2print(levelU);
 
          for (uint8_t i=0;i<2;i++)
          {
             if(i==curr_wert)
             {
-               u8g2.setDrawColor(1);
-               u8g2.drawFrame(char_x-2,char_y + i*dy,38,16);
+               //u8g2setDrawColor(1);
+               //u8g2drawFrame(char_x-2,char_y + i*dy,38,16);
                if(curr_cursorspalte == 1) // Wert einstellen
                {
-                  u8g2.drawFrame(char_x + 44,char_y + i*dy-1,18,18);
+                  //u8g2drawFrame(char_x + 44,char_y + i*dy-1,18,18);
                
                }
                else
                {
-                  u8g2.setDrawColor(0);
-                  u8g2.drawFrame(char_x + 44,char_y + i*dy-1,18,18);
-                  u8g2.setDrawColor(1);
+                  //u8g2setDrawColor(0);
+                  //u8g2drawFrame(char_x + 44,char_y + i*dy-1,18,18);
+                  //u8g2setDrawColor(1);
                }
 
             }
             else
             {
-               u8g2.setDrawColor(0);
-               u8g2.drawFrame(char_x-2,char_y + i*dy,38,16);
-               u8g2.drawFrame(char_x + 44,char_y + i*dy-1,18,18);
+               //u8g2setDrawColor(0);
+               //u8g2drawFrame(char_x-2,char_y + i*dy,38,16);
+               //u8g2drawFrame(char_x + 44,char_y + i*dy-1,18,18);
                
-               u8g2.setDrawColor(1);
+               //u8g2setDrawColor(1);
             }
          }
       
@@ -683,40 +683,40 @@ void updateAktionScreen()
          char_x += 8;
          char_y += 24;
          uint8_t dy = 20; // Abstand 2. Zeile
-         u8g2.drawStr(char_x,char_y + charh,"UP");
+         //u8g2drawStr(char_x,char_y + charh,"UP");
         
-         u8g2.setCursor(char_x + 48,char_y + charh);
-         u8g2.print(expoO);
+         //u8g2setCursor(char_x + 48,char_y + charh);
+         //u8g2print(expoO);
 
-         u8g2.drawStr(char_x,char_y + charh + dy,"DOWN");
-         u8g2.setCursor(char_x + 48 ,char_y + charh + dy);
-         u8g2.print(expoU);
+         //u8g2drawStr(char_x,char_y + charh + dy,"DOWN");
+         //u8g2setCursor(char_x + 48 ,char_y + charh + dy);
+         //u8g2print(expoU);
          for (uint8_t i=0;i<2;i++)
          {
             if(i==curr_wert)
             {
-               u8g2.setDrawColor(1);
-               u8g2.drawFrame(char_x-2,char_y + i*dy,38,16);
+               //u8g2setDrawColor(1);
+               //u8g2drawFrame(char_x-2,char_y + i*dy,38,16);
                if(curr_cursorspalte == 1) // Wert einstellen
                {
-                  u8g2.drawFrame(char_x + 44,char_y + i*dy-1,18,18);
+                  //u8g2drawFrame(char_x + 44,char_y + i*dy-1,18,18);
                
                }
                else
                {
-                  u8g2.setDrawColor(0);
-                  u8g2.drawFrame(char_x + 44,char_y + i*dy-1,18,18);
-                  u8g2.setDrawColor(1);
+                  //u8g2setDrawColor(0);
+                  //u8g2drawFrame(char_x + 44,char_y + i*dy-1,18,18);
+                  //u8g2setDrawColor(1);
                }
 
             }
             else
             {
-               u8g2.setDrawColor(0);
-               u8g2.drawFrame(char_x-2,char_y + i*dy,38,16);
-               u8g2.drawFrame(char_x + 44,char_y + i*dy-1,18,18);
+               //u8g2setDrawColor(0);
+               //u8g2drawFrame(char_x-2,char_y + i*dy,38,16);
+               //u8g2drawFrame(char_x + 44,char_y + i*dy-1,18,18);
                
-               u8g2.setDrawColor(1);
+               //u8g2setDrawColor(1);
             }
          }
 
@@ -725,52 +725,52 @@ void updateAktionScreen()
 
    }//switch curr_aktion
 
-   u8g2.setFont(u8g2_font_t0_15_mr);  
+   //u8g2setFont(u8g2_font_t0_15_mr);  
 } // updateAktionScreen
 
 void setSaveScreen(void)
 {
 
-   u8g2.clear();
+   //u8g2clear();
    resetRegister();
    //blink_cursorpos=0xFFFF;
    char_x = 18;
    char_y = 25;
-   u8g2.setFont(u8g2_font_t0_15_mr);
-   u8g2.drawStr(char_x,char_y + charh ,"Save Changes?");
+   //u8g2setFont(u8g2_font_t0_15_mr);
+   //u8g2drawStr(char_x,char_y + charh ,"Save Changes?");
 
 }
 
 void setModusScreen(void)
 {
-    u8g2.clear();
+    //u8g2clear();
    resetRegister();
    //blink_cursorpos=0xFFFF;
    char_y = 45;
-   u8g2.setFont(u8g2_font_t0_15_mr);
-   u8g2.setDrawColor(1);
-   u8g2.setFontDirection(3);
-   u8g2.drawStr(char_x,char_y + charh,"MODUS");
+   //u8g2setFont(u8g2_font_t0_15_mr);
+   //u8g2setDrawColor(1);
+   //u8g2setFontDirection(3);
+   //u8g2drawStr(char_x,char_y + charh,"MODUS");
    // Modus
-   u8g2.setFont(u8g2_font_t0_14_mr); 
-   u8g2.drawStr(12,40,"Menu");
-   u8g2.setFontDirection(0);
+   //u8g2setFont(u8g2_font_t0_14_mr); 
+   //u8g2drawStr(12,40,"Menu");
+   //u8g2setFontDirection(0);
    
    // Pfeil Modus
 
-   //u8g2.setFont(u8g2_font_unifont_t_symbols);
+   ////u8g2setFont(u8g2_font_unifont_t_symbols);
    
-   //u8g2.drawGlyph(2,55, 0x23F4);
-   u8g2.drawXBM(2,44,8,16,pfeil_left);
-   u8g2.setFont(u8g2_font_t0_15_mr);  
+   ////u8g2drawGlyph(2,55, 0x23F4);
+   //u8g2drawXBM(2,44,8,16,pfeil_left);
+   //u8g2setFont(u8g2_font_t0_15_mr);  
    
    char_x = 48;
    char_y = 2;
-   u8g2.drawStr(char_x+2,char_y + charh ,"MODELL");
+   //u8g2drawStr(char_x+2,char_y + charh ,"MODELL");
    
-   u8g2.drawStr(char_x+2,char_y + charh+18 ,"SIM");
+   //u8g2drawStr(char_x+2,char_y + charh+18 ,"SIM");
 
-   u8g2.drawStr(char_x+2,char_y + charh+36 ,"CALIB");
+   //u8g2drawStr(char_x+2,char_y + charh+36 ,"CALIB");
 
    updateModusScreen();
 
@@ -781,29 +781,29 @@ void updateModusScreen(void)
 {
    char_x = 48;
    char_y = 4;
-   u8g2.setFont(u8g2_font_t0_15_mr);  
-   charh = u8g2.getMaxCharHeight()-1;
+   //u8g2setFont(u8g2_font_t0_15_mr);  
+   //charh = //u8g2getMaxCharHeight()-1;
    switch (curr_modus)
    {
       case MODELL: //MODELL
       {
          //char_x = 14;
-         u8g2.setDrawColor(0);
-         u8g2.drawFrame(char_x-2,char_y +18,56,18);
-         u8g2.drawFrame(char_x-2,char_y +36,56,18);
+         //u8g2setDrawColor(0);
+         //u8g2drawFrame(char_x-2,char_y +18,56,18);
+         //u8g2drawFrame(char_x-2,char_y +36,56,18);
          
-         u8g2.setDrawColor(1);
-         u8g2.drawFrame(char_x-2,char_y  ,56,18);
+         //u8g2setDrawColor(1);
+         //u8g2drawFrame(char_x-2,char_y  ,56,18);
       }break;
       case SIM: // SIM
       {
          //char_y = 55;
-         u8g2.setDrawColor(0);
-         u8g2.drawFrame(char_x-2,char_y ,56,18);
-         u8g2.drawFrame(char_x-2,char_y +36,56,18);
-         u8g2.setDrawColor(1);
+         //u8g2setDrawColor(0);
+         //u8g2drawFrame(char_x-2,char_y ,56,18);
+         //u8g2drawFrame(char_x-2,char_y +36,56,18);
+         //u8g2setDrawColor(1);
          
-         u8g2.drawFrame(char_x-2,char_y+18 ,56,18);
+         //u8g2drawFrame(char_x-2,char_y+18 ,56,18);
       }break;
 
        case CALIB: // CALIB
@@ -812,23 +812,23 @@ void updateModusScreen(void)
          {
             if(blinkstatus)
             {
-               u8g2.setDrawColor(0);
+               //u8g2setDrawColor(0);
             }
             else
             {
-               u8g2.setDrawColor(1);
+               //u8g2setDrawColor(1);
             }
-            u8g2.drawFrame(char_x-2,char_y+36 ,56,18);
-            u8g2.setDrawColor(1);
+            //u8g2drawFrame(char_x-2,char_y+36 ,56,18);
+            //u8g2setDrawColor(1);
          }
          else // keine aktion
          {
-            u8g2.setDrawColor(0);
-            u8g2.drawFrame(char_x-2,char_y ,56,18);
-            u8g2.drawFrame(char_x-2,char_y +18,56,18);
-            u8g2.setDrawColor(1);
+            //u8g2setDrawColor(0);
+            //u8g2drawFrame(char_x-2,char_y ,56,18);
+            //u8g2drawFrame(char_x-2,char_y +18,56,18);
+            //u8g2setDrawColor(1);
             
-            u8g2.drawFrame(char_x-2,char_y+36 ,56,18);
+            //u8g2drawFrame(char_x-2,char_y+36 ,56,18);
          }
 
       }break;
@@ -854,23 +854,23 @@ void refreshScreen(void)
             sprintf(buf, "%2d:%2d",stopminute,stopsekunde);
          }
          
-         u8g2.drawStr(60,34,buf);
+         //u8g2drawStr(60,34,buf);
 
-         //u8g2.setCursor(62,28);
-         //u8g2.print(throttlecounter);
+         ////u8g2setCursor(62,28);
+         ////u8g2print(throttlecounter);
 
          //sprintf(buf,"%1.0F", throttlesekunden);
 
-         u8g2.setCursor(62,48);
-         u8g2.print("T:");
+         //u8g2setCursor(62,48);
+         //u8g2print("T:");
          sprintf(buf, "%3d",throttlesekunden);
-         u8g2.setDrawColor(0);
-         u8g2.drawBox(76,36,26,12);
-         u8g2.setDrawColor(1);
-         u8g2.drawStr(76,48,buf);
+         //u8g2setDrawColor(0);
+         //u8g2drawBox(76,36,26,12);
+         //u8g2setDrawColor(1);
+         //u8g2drawStr(76,48,buf);
 
 
-         u8g2.sendBuffer();
+         //u8g2sendBuffer();
 
       }
       case 3: //FUNKTIONSCREEN
@@ -879,22 +879,22 @@ void refreshScreen(void)
          
          if(blinkstatus)
          {
-            u8g2.setFontMode(0);
+            //u8g2setFontMode(0);
          }
          else
          {
-            u8g2.setFontMode(1);   
+            //u8g2setFontMode(1);   
          }
-         u8g2.setFont(u8g2_font_unifont_t_symbols);
+         //u8g2setFont(u8g2_font_unifont_t_symbols);
          //uint8_t pos_y = (blink_cursorpos & 0xFF00)>>8;
          //uint8_t pos_x = blink_cursorpos & 0x00FF;
-         //u8g2.drawGlyph(pos_x,pos_y, 0x23F6);
-         //u8g2.drawGlyph(pos_x,pos_x, 0x23F7);
+         ////u8g2drawGlyph(pos_x,pos_y, 0x23F6);
+         ////u8g2drawGlyph(pos_x,pos_x, 0x23F7);
 
-         //u8g2.drawXBM( 10, 50, 8, 16, pfeil_l);
-         //u8g2.drawXBM( 30, 50, 8, 16, pfeil_r);
+         ////u8g2drawXBM( 10, 50, 8, 16, pfeil_l);
+         ////u8g2drawXBM( 30, 50, 8, 16, pfeil_r);
 
-         u8g2.setFont(u8g2_font_t0_15_mr);  
+         //u8g2setFont(u8g2_font_t0_15_mr);  
       }break;
    }
 }

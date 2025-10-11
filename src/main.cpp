@@ -933,13 +933,13 @@ void tastenfunktion(uint16_t Tastenwert)
             {
                /*
                 oled_delete(0,62,20);
-                u8g2.setCursor(0,62);
-                u8g2.print(tastaturwert);
-                u8g2.print(" T ");
-                u8g2.setCursor(40,62);
-                u8g2.print(Taste);
+                //u8g2setCursor(0,62);
+                //u8g2print(tastaturwert);
+                //u8g2print(" T ");
+                //u8g2setCursor(40,62);
+                //u8g2print(Taste);
                 
-                u8g2.sendBuffer(); 
+                //u8g2sendBuffer(); 
                 */
             }
             
@@ -957,12 +957,12 @@ void tastenfunktion(uint16_t Tastenwert)
              if(OLED && Taste) // Taste und Tastenwert anzeigen
              {
              oled_delete(0,62,40);
-             u8g2.setCursor(0,62);
-             //u8g2.print(tastaturwert);
-             u8g2.print("T ");
-             u8g2.print(Taste);
+             //u8g2setCursor(0,62);
+             ////u8g2print(tastaturwert);
+             //u8g2print("T ");
+             //u8g2print(Taste);
              
-             u8g2.sendBuffer(); 
+             //u8g2sendBuffer(); 
              
              }
              */
@@ -1113,20 +1113,20 @@ void setup()
    //u8x8.setBusClock(4000000);
    //u8x8.setI2CAddress(2*0x3D);
    //u8x8.begin();
-   //u8g2.setBusClock(4000000);
+   ////u8g2setBusClock(4000000);
    
    // 0.96"
-   //u8g2.begin(); 
+   ////u8g2begin(); 
    initDisplay();
    
    /*
-    u8g2.clearDisplay(); 
-    //u8g2.setFont(u8g2_font_helvR14_tr); // https://github.com/olikraus/u8g2/wiki/fntlist12
-    u8g2.setFont(u8g2_font_t0_15_mr);  
-    u8g2.setCursor(4, 14);
-    u8g2.print(F("nRF24 T"));
-    //u8g2.setFont(u8g2_font_ncenB10_tr);
-    u8g2.setFontMode(0);
+    //u8g2clearDisplay(); 
+    ////u8g2setFont(u8g2_font_helvR14_tr); // https://github.com/olikraus/u8g2/wiki/fntlist12
+    //u8g2setFont(u8g2_font_t0_15_mr);  
+    //u8g2setCursor(4, 14);
+    //u8g2print(F("nRF24 T"));
+    ////u8g2setFont(u8g2_font_ncenB10_tr);
+    //u8g2setFontMode(0);
     oled_vertikalbalken(VBX,VBY,balkenvb,balkenvh);
     
     oled_horizontalbalken(HBX,HBY,balkenhb,balkenhh);
@@ -1137,7 +1137,7 @@ void setup()
    setHomeScreen();
    
    
-   u8g2.sendBuffer(); 
+   //u8g2sendBuffer(); 
    
    
    //                Configure the NRF24 module  | NRF24 modül konfigürasyonu
@@ -1467,7 +1467,7 @@ void loop()
       if(curr_screen == 5)
       {
          updateModusScreen();
-         u8g2.sendBuffer();
+         //u8g2sendBuffer();
       }
       
    }   // zeitintervall > 500
@@ -1494,7 +1494,7 @@ void loop()
                   curr_screen = 5;
                   curr_cursorspalte = 0;
                   setModusScreen();
-                  u8g2.sendBuffer();
+                  //u8g2sendBuffer();
                   
                }break;
             }     // switch curr_screen  
@@ -1520,7 +1520,7 @@ void loop()
                      {
                         curr_model--;
                         updateMenuScreen();
-                        u8g2.sendBuffer();
+                        //u8g2sendBuffer();
                      }
                   }
                   case 2: //T2 MODELLSCREEN
@@ -1529,7 +1529,7 @@ void loop()
                      {
                         curr_funktion--;
                         updateModellScreen();
-                        u8g2.sendBuffer();
+                        //u8g2sendBuffer();
                      }
                   }break;
                   case 3: //FUNKTIONSCREEN
@@ -1542,7 +1542,7 @@ void loop()
                            {
                               curr_aktion--;
                               updateFunktionScreen();
-                              u8g2.sendBuffer();
+                              //u8g2sendBuffer();
                            }
                         }break;
                         case 1: // Level, expo up, down
@@ -1633,7 +1633,7 @@ void loop()
                            
                      }// switch curr_cursorspalte
                      updateAktionScreen();
-                     u8g2.sendBuffer();
+                     //u8g2sendBuffer();
                   }break;
                      
                   case 5: // T2 UP  MODUSSCREEN
@@ -1722,7 +1722,7 @@ void loop()
                         case 0: 
                         {
                            updateFunktionScreen();
-                           u8g2.sendBuffer();
+                           //u8g2sendBuffer();
                         }break;
                         case 1: // up, down enabled
                         {
@@ -1738,7 +1738,7 @@ void loop()
                      curr_cursorspalte = 0;
                      curr_wert = 0;
                      updateAktionScreen();
-                     u8g2.sendBuffer();
+                     //u8g2sendBuffer();
                   }break;
                      
                   case 5: // T4 LEFT ModusScreen
@@ -1747,7 +1747,7 @@ void loop()
                      setModus();
                      setMenuScreen();
                      updateMenuScreen();
-                     u8g2.sendBuffer();
+                     //u8g2sendBuffer();
                      
                      
                   }break;
@@ -1776,10 +1776,10 @@ void loop()
                         taste5counter = 0;
                         tastaturstatus |= ~(1<<T5_WAIT); // Warten beendet
                         //Serial.print("T5 setMenuScreen ");
-                        //u8g2.clear();
+                        ////u8g2clear();
                         
                         setMenuScreen();
-                        u8g2.sendBuffer();
+                        //u8g2sendBuffer();
                      }
                   }
                }
@@ -1798,7 +1798,7 @@ void loop()
                            //Serial.println(curr_model);
                            setModellScreen();
                            curr_screen = 2;
-                           u8g2.sendBuffer();
+                           //u8g2sendBuffer();
                         }break;
                         case 2: // FUNKTIONSCREEN
                         {
@@ -1806,7 +1806,7 @@ void loop()
                            //Serial.println(curr_funktion);
                            setFunktionScreen();
                            curr_screen = 3;
-                           u8g2.sendBuffer();
+                           //u8g2sendBuffer();
                         }break;
                         case 3: // AKTIONSCREEN
                         {
@@ -1814,7 +1814,7 @@ void loop()
                            //Serial.println(curr_aktion);
                            setAktionScreen();
                            curr_screen = 4;
-                           u8g2.sendBuffer();
+                           //u8g2sendBuffer();
                         }break;
                         case 4: 
                         {
@@ -1847,7 +1847,7 @@ void loop()
                            
                            
                            updateModusScreen();
-                           u8g2.sendBuffer();
+                           //u8g2sendBuffer();
 
                            //setCalib();
                         }break;
@@ -1893,7 +1893,7 @@ void loop()
                         curr_cursorzeile = 0;
                         curr_cursorspalte = 0;
                         curr_screen = 5; // MODUSSCREEN
-                        u8g2.sendBuffer();
+                        //u8g2sendBuffer();
                      }
                   }break;
                   case 2: // MODELLSCREEN
@@ -1910,7 +1910,7 @@ void loop()
                         {
                            curr_cursorspalte++; // max 1                        
                            updateFunktionScreen();
-                           u8g2.sendBuffer();
+                           //u8g2sendBuffer();
                         }break;
                         case 1: // up, down enabled
                         {
@@ -1925,8 +1925,8 @@ void loop()
                                  {
                                     
                                     //blink_cursorpos = 86<<8 | 22;
-                                    //u8g2.setDrawColor(1);
-                                    //u8g2.drawFrame(88,char_y,48,16);
+                                    ////u8g2setDrawColor(1);
+                                    ////u8g2drawFrame(88,char_y,48,16);
                                  }                             
                               }break;
                               case 1: // expo
@@ -1953,7 +1953,7 @@ void loop()
                         }break;
                      }// switch
                      updateAktionScreen();
-                     u8g2.sendBuffer();
+                     //u8g2sendBuffer();
                   }break;
                      
                   case 5: // T6 ModusScreen
@@ -1969,7 +1969,7 @@ void loop()
                               curr_cursorspalte++;
                               
                               updateMenuScreen();
-                              u8g2.sendBuffer();
+                              //u8g2sendBuffer();
                            }
                         }break;
                         case 1: // Auswahl
@@ -1992,7 +1992,7 @@ void loop()
                if(curr_screen )
                {
                   curr_screen--;
-                  u8g2.clear();
+                  //u8g2clear();
                   switch (curr_screen)
                   {
                      case 0: // HOMESCREEN
@@ -2003,7 +2003,7 @@ void loop()
                      case 1: // MENUSCREEN
                      {
                         //setSaveScreen();
-                        //  u8g2.sendBuffer();
+                        //  //u8g2sendBuffer();
                         setMenuScreen();
                      }break;
                      case 2: // MODELLSCREEN
@@ -2035,7 +2035,7 @@ void loop()
                }
                //Serial.print("T7 curr_screen: ");
                //Serial.println(curr_screen);              
-               u8g2.sendBuffer();
+               //u8g2sendBuffer();
                tastaturstatus &=  ~(1<<AKTION_OK);
                tastaturstatus |= (1<<UPDATE_OK); 
                calibstatus &= ~(1<<CALIB_START);   
@@ -2062,7 +2062,7 @@ void loop()
                      {
                         curr_model++;
                         updateMenuScreen();
-                        u8g2.sendBuffer();
+                        //u8g2sendBuffer();
                      }
                   }break;
                      
@@ -2072,7 +2072,7 @@ void loop()
                      {
                         curr_funktion++;
                         updateModellScreen();
-                        u8g2.sendBuffer();
+                        //u8g2sendBuffer();
                      }
                   }break;
                      
@@ -2082,7 +2082,7 @@ void loop()
                      {
                         curr_aktion++;
                         updateFunktionScreen();
-                        u8g2.sendBuffer();
+                        //u8g2sendBuffer();
                      }
                   }break;
                      
@@ -2096,7 +2096,7 @@ void loop()
                            {
                               curr_wert++;
                               updateAktionScreen();
-                              u8g2.sendBuffer();
+                              //u8g2sendBuffer();
                            }
                         }break;
                         case 1: // T8 UP DOWN
@@ -2170,7 +2170,7 @@ void loop()
                         }break;
                      }// switch curr_cursorspalte
                      updateAktionScreen();
-                     u8g2.sendBuffer();
+                     //u8g2sendBuffer();
                   }break;
                      
                   case 5: // T8 DOWN MODUSSCREEN
@@ -2194,7 +2194,7 @@ void loop()
                            case CALIB:
                            {
                               updateModusScreen();
-                              u8g2.sendBuffer();
+                              //u8g2sendBuffer();
                            }break;
                         }// switch curr_modus
                         
@@ -2244,7 +2244,7 @@ void loop()
 
                     
                      
-                     //u8g2.sendBuffer();
+                     ////u8g2sendBuffer();
                   }   
                }break;
                   
@@ -2436,11 +2436,11 @@ void loop()
       }
       //eepromread();
       ///*
-      //u8g2.clearBuffer();                   // Clear display.
+      ////u8g2clearBuffer();                   // Clear display.
       //u8x8.setFont(u8g2_font_ncenB08_tr);    // choose a suitable font
       //u8x8.drawString(0, 24, "Hello OLED!");    // write something to the buffer
       //u8x8.sendBuffer();   
-      //u8g2.sendBuffer(); // Transfer buffer to screen.
+      ////u8g2sendBuffer(); // Transfer buffer to screen.
       //*/
          /*
          //Serial.print("blinkcounter: ");
@@ -2467,37 +2467,37 @@ void loop()
       // 0.96
       loopcounter1++;
       uint8_t charindex = loopcounter1  & 0x7F;
-      //u8g2.setDrawColor(0);
-      charh = u8g2.getMaxCharHeight() ;
+      ////u8g2setDrawColor(0);
+      //charh = //u8g2getMaxCharHeight() ;
       //oled_delete(4,44,64);
       
-      //u8g2.drawGlyph(32,44,'A'+(charindex));
+      ////u8g2drawGlyph(32,44,'A'+(charindex));
       char buf0[4];
       /*
        
        // Yaw
-       //u8g2.setCursor(4,30);
-       //u8g2.print(data.yaw);
+       ////u8g2setCursor(4,30);
+       ////u8g2print(data.yaw);
        sprintf(buf0, "%3d", data.yaw);
-       u8g2.drawStr(4,30,buf0);
+       //u8g2drawStr(4,30,buf0);
        
        // Pitch
-       // u8g2.setCursor(36,30);
-       // u8g2.print(data.pitch);
+       // //u8g2setCursor(36,30);
+       // //u8g2print(data.pitch);
        sprintf(buf0, "%3d", data.pitch);
-       u8g2.drawStr(32,30,buf0);
+       //u8g2drawStr(32,30,buf0);
        
        // Roll
-       //u8g2.setCursor(4,46);
-       //u8g2.print(data.roll);
+       ////u8g2setCursor(4,46);
+       ////u8g2print(data.roll);
        sprintf(buf0, "%3d", data.roll);
-       u8g2.drawStr(4,42,buf0);
+       //u8g2drawStr(4,42,buf0);
        
        // Throttle
-       //u8g2.setCursor(36,46);
-       //u8g2.print(data.throttle);
+       ////u8g2setCursor(36,46);
+       ////u8g2print(data.throttle);
        sprintf(buf0, "%3d", data.throttle);
-       u8g2.drawStr(32,42,buf0);
+       //u8g2drawStr(32,42,buf0);
        */
       
       //uint8_t wertv = map(data.pitch,0,255,2,balkenvh-2); // Platz fuer 3 pixel dicke
@@ -2521,7 +2521,7 @@ void loop()
       if(curr_screen == 0)
       {
          updateHomeScreen();
-         u8g2.sendBuffer();
+         //u8g2sendBuffer();
       }
       
       if(loopcounter1 > 25)
