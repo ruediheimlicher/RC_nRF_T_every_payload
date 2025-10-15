@@ -17,28 +17,22 @@
 #include <elapsedMillis.h>
 #include "defines.h"
 
-
+#include "MS5611.h"
 
 const uint64_t pipeOut = 0xABCDABCD71LL;         // NOTE: The address in the Transmitter and Receiver code must be the same "0xABCDABCD71LL" | Verici ve Alıcı kodundaki adres aynı olmalıdır
 
 extern "C" 
 
-//U8G2_SSD1327_WS_128X128_HW_I2C u8g2(U8G2_R0,U8X8_PIN_NONE);
 
 // github.com/olikraus/u8g2/discussions/1865
-//U8X8_SSD1327_WS_128X128_HW_I2C u8x8(U8X8_PIN_NONE);
 
 // 0.96"
 // >> code in display.h
 
-//U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/U8X8_PIN_NONE);
 uint16_t loopcounter0 = 0;
 uint16_t loopcounter1 = 0;
 
-//uint8_t charh = 0;
-//uint8_t balkenh = 50;
-//uint8_t balkenb = 5;
-//U8X8_SSD1327_WS_128X128_HW_I2C u8g2(A4,A5);
+
 #define TEST         0
 #define CE_PIN       9
 #define CSN_PIN      10
@@ -81,7 +75,7 @@ RF24 radio(CE_PIN, CSN_PIN);
 
 #define BATT_PIN         A6
 
-
+uint8_t debouncecheck = 0;
 
 uint16_t loopcounter = 0;
 uint8_t blinkcounter = 0;
@@ -149,7 +143,7 @@ uint16_t          potwertarray[NUM_SERVOS] = {}; // Werte fuer Mitte
 uint8_t                        curr_pfeil = 0;
 
 //uint16_t      blink_cursorpos=0xFFFF;
-uint8_t blinkstatus = 0;
+
 
 uint16_t stopsekunde=0;
 uint16_t stopminute=0;
@@ -160,6 +154,9 @@ uint8_t motorstunde=0;
 uint16_t sendesekunde=0;
 uint16_t sendeminute=0;
 uint8_t sendestunde=0;
+
+// Status
+uint8_t blinkstatus = 0;
 
 uint8_t curr_steuerstatus = 0;
 
@@ -216,6 +213,8 @@ uint16_t tastaturwertarray[ANZ_REP] = {};
 uint8_t mittelposition = 0;
 
 uint16_t winkelcounter = 0;
+uint8_t rampe = 0;
+int8_t ramprichtung = 1;
 
 uint8_t tastencounter = 0;
 uint8_t tastaturstatus = 0;
@@ -231,9 +230,6 @@ uint16_t potgrenzearray[NUM_SERVOS][2]; // obere und untere Grenze von adc
 float quot = (ppmhi - ppmlo)/(pothi - potlo);
 
 float expoquot = (ppmhi - ppmlo)/2/0x200; // umrechnen der max expo (512) auf PPM  
-
-// float quotarray[NUM_SERVOS] = {}; // Umrechnungsfaktor pro Pot
-
 //uint8_t sinarray[127] = {127,133,139,145,151,156,162,168,173,179,184,189,194,199,204,208,212,216,220,224,227,230,233,236,238,240,242,244,245,246,247,247,247,247,246,245,244,243,241,239,237,235,232,229,226,222,218,214,210,206,201,197,192,187,181,176,170,165,159,153,148,142,136,130,124,118,112,106,100,95,89,83,78,73,67,62,57,53,48,44,40,36,32,28,25,22,19,17,15,13,11,10,9,8,7,7,7,7,8,9,10,12,14,16,18,21,24,27,30,34,38,42,46,50,55,60,65,70,75,81,86,92,98,103,109,115,121};
 // MasterSlave
 uint8_t masterslavestatus = 0;
@@ -432,6 +428,49 @@ ISR(TCB0_INT_vect)
 }
 
 
+uint8_t debounceTaste()
+{
+   static  uint8_t debounced_state = 0;
+   static uint16_t state = 0;
+   state = (state<<1) | (tastaturwert>10) ;
+   if(state >= 0xF00)
+   {
+      //debouncecheck = 1;
+      return 1;
+      
+   }
+   
+   //debouncecheck = 0;
+   return 2;
+}
+
+
+void setupDebounce()
+{
+   // GPT "nano_every timer interrupt 4ms "
+   // Timer stoppen und auf Normal Mode konfigurieren
+  TCA0.SINGLE.CTRLA = 0; // Timer aus
+
+  // Periodenwert für 4 ms bei Prescaler 64
+  TCA0.SINGLE.PER = 999; // Zählt von 0 bis 999 = 1000 Schritte
+
+  // Compare Match Interrupt aktivieren
+  TCA0.SINGLE.INTCTRL = TCA_SINGLE_OVF_bm; // Overflow Interrupt aktivieren
+
+  // Prescaler = 64, Timer starten
+  TCA0.SINGLE.CTRLA = TCA_SINGLE_CLKSEL_DIV64_gc | TCA_SINGLE_ENABLE_bm;
+}
+
+ISR(TCA0_OVF_vect) 
+{
+  // Hier passiert alle 4 ms etwas
+
+  debouncecheck = debounceTaste();
+
+  
+  // Interrupt-Flag löschen
+  TCA0.SINGLE.INTFLAGS = TCA_SINGLE_OVF_bm;
+}
 
 
 void setupPPM() {
@@ -880,6 +919,11 @@ uint16_t readTastatur(uint8_t kanal)
    return  tastenwertsumme / ANZ_REP;
 }
 
+void tastenfunktion_debounce(uint16_t wert)
+{
+   
+}
+
 void tastenfunktion(uint16_t Tastenwert)
 {  
    tastaturcounter++;   
@@ -1024,7 +1068,7 @@ void setCalib(void)
 
 void setup()
 {
-   anzeigestatus = 0;//ANZEIGE_POT;
+   anzeigestatus = ANZEIGE_POT;
    
    PCB_BOARD = BOARD_6;
    uint8_t ee[16];
@@ -1110,34 +1154,20 @@ void setup()
    //lcd.print("hello, world!");
    
    // OLED
-   //u8x8.setBusClock(4000000);
-   //u8x8.setI2CAddress(2*0x3D);
-   //u8x8.begin();
-   //u8g2.setBusClock(4000000);
+   
    
    // 0.96"
-   //u8g2.begin(); 
+   
    initDisplay();
    
-   /*
-    u8g2.clearDisplay(); 
-    //u8g2.setFont(u8g2_font_helvR14_tr); // https://github.com/olikraus/u8g2/wiki/fntlist12
-    u8g2.setFont(u8g2_font_t0_15_mr);  
-    u8g2.setCursor(4, 14);
-    u8g2.print(F("nRF24 T"));
-    //u8g2.setFont(u8g2_font_ncenB10_tr);
-    u8g2.setFontMode(0);
-    oled_vertikalbalken(VBX,VBY,balkenvb,balkenvh);
-    
-    oled_horizontalbalken(HBX,HBY,balkenhb,balkenhh);
-    */
+   
    oled_vertikalbalken(BATTX,BATTY,BATTB,BATTH);
    
    
    setHomeScreen();
    
    
-   u8g2.sendBuffer(); 
+   //u8g2.sendBuffer(); 
    
    
    //                Configure the NRF24 module  | NRF24 modül konfigürasyonu
@@ -1235,6 +1265,7 @@ void setup()
    
    setupPPM();
    
+   setupDebounce();
    
    
    //Serial.print("\n"); 
@@ -1413,18 +1444,23 @@ double mapd(double x, double in_min, double in_max, double out_min, double out_m
 }
 
 uint16_t testwert=0;
+
+
+
 void loop()
 {                
    //            
    loopcounter++;
    //digitalWrite(BUZZPIN,!(digitalRead(BUZZPIN)));
-   tastaturwert = analogRead(TASTATUR_PIN)/2;
+   //tastaturwert = analogRead(TASTATUR_PIN)/2;
    //tastaturwert = readTastatur(TASTATUR_PIN);
    //tastaturwert = readTastatur(TASTATUR_PIN)/2;
    if(sincelasttastatur > 2)
    {
       sincelasttastatur = 0;
+      tastaturwert = analogRead(TASTATUR_PIN)/2;
       tastenfunktion(tastaturwert);
+
    }
    
    
@@ -1702,6 +1738,7 @@ void loop()
                            curr_cursorspalte = 0; // Rahmen auf YES
                            
                            updateHomeScreen();
+                           u8g2.sendBuffer();
                            
                         }
                      }
@@ -1881,6 +1918,7 @@ void loop()
                         {
                            curr_cursorspalte = 1; // Rahmen auf NO
                            updateHomeScreen();
+                           u8g2.sendBuffer();
                            
                         }
                      }
@@ -2250,6 +2288,7 @@ void loop()
                   
             }// switch curr_screen
             updateHomeScreen();
+            u8g2.sendBuffer();
          }break;
       }//switch (Taste)
       if(Taste)
@@ -2307,6 +2346,17 @@ void loop()
                //Serial.print(map( potwertarray[i],0,1024,2000,1000));
                
             }
+            Serial.print("\tA 0\t");
+            Serial.print(ackData[0]);
+            Serial.print("\t");
+            Serial.print(ackData[1]);
+            
+            Serial.print("\t2\t");
+            Serial.print(ackData[2]);
+            Serial.print("\t3\t");
+            Serial.print(ackData[3]);
+            Serial.print("\t\t");
+
             
          }break;
             
@@ -2371,6 +2421,13 @@ void loop()
          
          
       }
+
+      //Serial.print(ackData[0]);
+      Serial.print("\t");
+      Serial.print("debouncecheck: ");
+      Serial.print(debouncecheck);
+      Serial.print("\n");
+
       loopcounter = 0;
       blinkcounter++;
       impulscounter+=16;
@@ -2468,7 +2525,7 @@ void loop()
       loopcounter1++;
       uint8_t charindex = loopcounter1  & 0x7F;
       //u8g2.setDrawColor(0);
-      charh = u8g2.getMaxCharHeight() ;
+      //charh = u8g2.getMaxCharHeight() ;
       //oled_delete(4,44,64);
       
       //u8g2.drawGlyph(32,44,'A'+(charindex));
@@ -2719,6 +2776,18 @@ void loop()
       
       winkelcounter+= 2;
       
+     
+      // uint8_t delta = winkelcounter % 127;
+      rampe = rampe + (2 * ramprichtung);
+      if(rampe > 250)
+      {
+         ramprichtung = -1;
+      }
+      else if (rampe < 5)
+      {
+         ramprichtung = 1;
+      }
+
       
       float winkel = float(winkelcounter)/180.0 * 3.14;
 
@@ -2734,6 +2803,7 @@ void loop()
       data.pitch = Border_Mapvar255(PITCH, potwertarray[PITCH],potgrenzearray[PITCH][1],servomittearray[PITCH],potgrenzearray[PITCH][0],false);
       //data.pitch = int(sinfloat);
 
+      //data.pitch = rampe;      
       
       //Serial.println(data.pitch);
       //data.pitch = servomittearray[PITCH] + 

@@ -120,6 +120,7 @@ void initDisplay()
   uint8_t c = 0;
 }
 
+/*
  void oled_fill(uint8_t x,uint8_t y,uint8_t l)
 {
    //u8g2.setDrawColor(0);
@@ -137,7 +138,7 @@ void oled_setInt(uint8_t x,uint8_t y, uint16_t data)
    u8g2.sendBuffer();
 
 }
-
+*/
 void oled_delete(uint8_t x,uint8_t y,uint8_t l)
 {
    u8g2.setDrawColor(0);
@@ -313,7 +314,7 @@ void updateHomeScreen()
       u8g2.setDrawColor(0);
       u8g2.drawBox(4,46,80,18);
       u8g2.setDrawColor(1);
-      u8g2.sendBuffer();
+      //u8g2.sendBuffer();
       savestatus = 1;
    }
 
@@ -355,13 +356,13 @@ void updateHomeScreen()
    uint8_t la = kanalsettingarray[0][0][1] & 0x07;
    uint8_t  lb = (kanalsettingarray[0][0][1] & 0x70)>>4;
 
-   u8g2.sendBuffer();
+   //u8g2.sendBuffer();
 }
 
 void setMenuScreen()
 {
    u8g2.clear();
-   resetRegister();
+   //resetRegister();
    //blink_cursorpos=0xFFFF;
    charh = u8g2.getMaxCharHeight()-1;
 
@@ -374,7 +375,7 @@ void setMenuScreen()
    u8g2.setFont(u8g2_font_t0_15_mr); 
    u8g2.drawStr(112,40,"Modus");
  
-   u8g2.setFont(u8g2_font_t0_15_mr); 
+   //u8g2.setFont(u8g2_font_t0_15_mr); 
    u8g2.drawStr(char_x,char_y +charh,"MODELL");
    
    u8g2.setFontDirection(0);
@@ -384,9 +385,6 @@ void setMenuScreen()
    u8g2.drawXBM(104,45,8,16,pfeil_right);
    
    //
-
-
-
 
    //u8g2.setFont(u8g2_font_t0_15_mr);  
    
@@ -732,7 +730,7 @@ void setSaveScreen(void)
 {
 
    u8g2.clear();
-   resetRegister();
+   //resetRegister();
    //blink_cursorpos=0xFFFF;
    char_x = 18;
    char_y = 25;
@@ -744,7 +742,7 @@ void setSaveScreen(void)
 void setModusScreen(void)
 {
     u8g2.clear();
-   resetRegister();
+   //resetRegister();
    //blink_cursorpos=0xFFFF;
    char_y = 45;
    u8g2.setFont(u8g2_font_t0_15_mr);
