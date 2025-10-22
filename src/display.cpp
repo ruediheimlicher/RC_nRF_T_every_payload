@@ -200,9 +200,30 @@ void oled_batteriebalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint1
        // Batt
       //sprintf(buf1, "%1.1f", UBatt);
 
+}
 
+void oled_flyerbatteriebalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint16_t wert)
+{
+ uint8_t anzeige = map(wert-30,0,12,0,h); // Bereich 3-7.4V, 1.2V
+ uint8_t min = map(2,0,12,0,h);
+  u8g2.setDrawColor(0);
+  u8g2.drawBox(x+1,y+1,b-2,h-2);
+  u8g2.setDrawColor(1);
+  //u8g2.drawBox(x+7,y+1,b-2,h-2);
+  //u8g2.drawHLine(x,y+h-wert,b);
+  //u8g2.drawHLine(x,y+h-wert-1,b);
+  //u8g2.drawHLine(x,y+h-wert+1,b);
+  u8g2.drawBox(x+1,y+h-anzeige,b-2,anzeige);
+  u8g2.setDrawColor(0);
+  u8g2.drawHLine(x,y+h-min,b);
+  u8g2.drawHLine(x,y+h-min-1,b);
+  u8g2.setDrawColor(1);
+
+       // Batt
+      //sprintf(buf1, "%1.1f", UBatt);
 
 }
+
 
 void oled_setBatterieWert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,float wert)
 {
@@ -262,6 +283,8 @@ void setHomeScreen()
    u8g2.print(ModelTable[curr_model]);
    u8g2.setFont(u8g2_font_t0_15_mr);  
    oled_vertikalbalken(BATTX,BATTY,BATTB,BATTH);
+   oled_vertikalbalken(FLYBATTX,FLYBATTY,FLYBATTB,FLYBATTH);
+
    u8g2.sendBuffer();
    curr_cursorspalte = 0;
    curr_cursorzeile = 0;
@@ -343,7 +366,12 @@ void updateHomeScreen()
       //u8g2.print(data.throttle);
       sprintf(buf0, "%3d", data.throttle);
       u8g2.drawStr(30,48,buf0);
+
+      sprintf(buf0, "%3d", ackData[3]); // Batt
+      u8g2.drawStr(TAB0,64,buf0);
      
+      sprintf(buf0, "%3d", ackData[2]); // alt
+      u8g2.drawStr(TAB0+30,64,buf0);
       uint8_t p = curr_model;
 
    oled_batteriebalken_setwert(BATTX,BATTY,BATTB,BATTH,batterieanzeige);

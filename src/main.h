@@ -16,10 +16,16 @@ struct Signal
    byte aux2;
    
 };
-#define BATTX        104
+#define BATTX        118
 #define BATTY        2
 #define BATTH        44
-#define BATTB        20
+#define BATTB        7
+
+#define FLYBATTX        100
+#define FLYBATTY        2
+#define FLYBATTH        44
+#define FLYBATTB        14
+
 
 // defines for array pos
 #define YAW         0

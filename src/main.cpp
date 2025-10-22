@@ -32,7 +32,7 @@ extern "C"
 uint16_t loopcounter0 = 0;
 uint16_t loopcounter1 = 0;
 
-
+#define RAMPETEST    0
 #define TEST         0
 #define CE_PIN       9
 #define CSN_PIN      10
@@ -2567,6 +2567,8 @@ void loop()
       //batterieanzeige = (0x50*batteriespannung)/0x6B/8; // resp. /107
       batterieanzeige = (0x50*batteriespannung)/0x9A/8; // integer-operation, resp. /154 als float
       
+      batterieanzeige = (uint16_t)data.yaw; 
+
       /*
        Serial.print(batteriespannung);
        Serial.print("\t");
@@ -2789,6 +2791,7 @@ void loop()
       }
 
       
+
       float winkel = float(winkelcounter)/180.0 * 3.14;
 
       //Serial.print(winkelcounter);
@@ -2803,7 +2806,11 @@ void loop()
       data.pitch = Border_Mapvar255(PITCH, potwertarray[PITCH],potgrenzearray[PITCH][1],servomittearray[PITCH],potgrenzearray[PITCH][0],false);
       //data.pitch = int(sinfloat);
 
-      //data.pitch = rampe;      
+      if(RAMPETEST)
+      {
+         data.pitch = rampe;       
+      }
+           
       
       //Serial.println(data.pitch);
       //data.pitch = servomittearray[PITCH] + 
