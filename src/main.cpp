@@ -1192,7 +1192,7 @@ void setup()
    radio.setPALevel(RF24_PA_MAX); 
    radio.enableDynamicPayloads();
    radio.enableAckPayload();
-   radio.setRetries(5, 5);
+   radio.setRetries(0, 0);
    //radio.stopListening();              // Start the radio comunication for Transmitter | Verici için sinyal iletişimini başlatır.
    if (radio.failureDetected) 
    {
@@ -2828,8 +2828,11 @@ void loop()
       
       //uint16_t throttlemitte = servomittearray[THROTTLE];
       //data.throttle = Throttle_Map(potwertarray[THROTTLE],throttlemitte, POTHI,0,255, false );   
-      data.throttle = Throttle_Map255(potwertarray[THROTTLE],servomittearray[THROTTLE], potgrenzearray[THROTTLE][0],10,127, false ); // nur eine haelfte 
+      //data.throttle = Throttle_Map255(potwertarray[THROTTLE],servomittearray[THROTTLE], potgrenzearray[throttle][0],10,240, false ); // nur eine haelfte 
       
+      data.throttle = Border_Mapvar255(THROTTLE,potwertarray[THROTTLE],potgrenzearray[THROTTLE][1],servomittearray[THROTTLE],potgrenzearray[THROTTLE][0],true);
+
+
       //data.yaw = 13;
       //data.pitch = int(sinfloat); 
       //data.roll = 14;
