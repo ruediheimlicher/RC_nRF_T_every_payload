@@ -958,6 +958,7 @@ void tastenfunktion(uint16_t Tastenwert)
                case BOARD_2:
                {
                   Taste= Joystick_Tastenwahl_33_2(Tastenwert);
+               
                }break;
                case BOARD_6:
                {
@@ -1242,7 +1243,10 @@ void setup()
          }
             
       }
-      
+      if(i == THROTTLE)
+      {
+         servomittearray[i] = 127;
+      }
       //servomittearray[i] = analogRead(adcpinarrayA[i]);
       //Serial.print("i:\t");
       //Serial.print(i);
@@ -2718,7 +2722,7 @@ void loop()
          {
             
             
-            if(potwert > potgrenzearray[i][0])
+            if(potwert >= potgrenzearray[i][0])
             {
                potgrenzearray[i][0] = potwert; // pothi
             }
@@ -2762,7 +2766,15 @@ void loop()
          }
          else if(i == THROTTLE)
          {
-            potwertarray[i] = potwert;
+            if(potwert < 50)
+            {
+               potwertarray[i] = 10; // Motor sicher abstellen
+            }
+            else
+            {
+               potwertarray[i] = potwert;
+            }
+            
          }
          
          if(i==0)
@@ -2776,9 +2788,9 @@ void loop()
       
       data.yaw = Border_Mapvar255(YAW, potwertarray[YAW],potgrenzearray[YAW][1],servomittearray[YAW],potgrenzearray[YAW][0],false);
       
+      /*
       winkelcounter+= 2;
       
-     
       // uint8_t delta = winkelcounter % 127;
       rampe = rampe + (2 * ramprichtung);
       if(rampe > 250)
@@ -2803,6 +2815,7 @@ void loop()
       double sinfloat = 127.0 + 125.0*sin(winkel/2);
       //Serial.print(sinfloat);
       //Serial.print("\t");
+      */
       data.pitch = Border_Mapvar255(PITCH, potwertarray[PITCH],potgrenzearray[PITCH][1],servomittearray[PITCH],potgrenzearray[PITCH][0],false);
       //data.pitch = int(sinfloat);
 
@@ -2832,7 +2845,7 @@ void loop()
       
       data.throttle = Border_Mapvar255(THROTTLE,potwertarray[THROTTLE],potgrenzearray[THROTTLE][1],servomittearray[THROTTLE],potgrenzearray[THROTTLE][0],true);
 
-
+      
       //data.yaw = 13;
       //data.pitch = int(sinfloat); 
       //data.roll = 14;

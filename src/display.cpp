@@ -367,12 +367,20 @@ void updateHomeScreen()
       sprintf(buf0, "%3d", data.throttle);
       u8g2.drawStr(30,48,buf0);
 
-      sprintf(buf0, "%3d", ackData[3]); // Batt
+      sprintf(buf0, "%3d", ackData[0]); // yaw
       u8g2.drawStr(TAB0,64,buf0);
      
+      sprintf(buf0, "%3d", ackData[1]); // Pitch
+      u8g2.drawStr(TAB0+28,64,buf0);
+
       sprintf(buf0, "%3d", ackData[2]); // alt
-      u8g2.drawStr(TAB0+30,64,buf0);
+      u8g2.drawStr(TAB0+56,64,buf0);
+
+       sprintf(buf0, "%3d", ackData[3]); // Batt
+      u8g2.drawStr(TAB0+84,64,buf0);
+      
       uint8_t p = curr_model;
+
 
    oled_batteriebalken_setwert(BATTX,BATTY,BATTB,BATTH,batterieanzeige);
    u8g2.setFont(u8g2_font_t0_14_mr);  
