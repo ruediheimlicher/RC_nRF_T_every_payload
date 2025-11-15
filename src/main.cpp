@@ -57,7 +57,7 @@ RF24 radio(CE_PIN, CSN_PIN);
 #define EEPROMEXPOSETTINGS  0x48
 
 
-#define BLINKRATE 0x0EFF
+#define BLINKRATE 0x1EFF
 
 // defines for PINS
 // links
@@ -192,13 +192,32 @@ uint16_t levelintcheck = 0;
 uint16_t levelintpitcha = 0;
 
 uint16_t levelintpitchb = 0;
+float batteriespannung = 0;
+float batteriespannungraw = 0;
 
-uint16_t batteriespannung = 0;
 uint16_t batteriearray[8] = {};
 uint16_t batteriemittel = 0;
 uint8_t batteriemittelwertcounter = 0;
 uint16_t batterieanzeige = 0;
 float UBatt = 0;
+
+float flyerbatteriespannung = 0;
+float flyerbatteriespannungraw = 0;
+uint16_t flyerbatterieanzeige = 0;
+float UFlyerBatt = 0;
+
+
+uint16_t pressureint = 0;
+float pressurefloat = 0;
+const float seaLevelPressure = 1013.25;
+
+float altitude = 0;
+uint16_t altitudeint = 0;
+
+uint8_t temperaturint = 0;
+float temperaturfloat = 0;
+
+
 uint8_t eepromstatus = 0;
 uint16_t eepromprelltimer = 0;
 uint16_t intdiff = 0;
@@ -372,7 +391,6 @@ ISR(TCB0_INT_vect)
 
       ISRcounter = 0;
       // Impuls erzeugen
-      
       
       
       if (pulseState ) 
@@ -870,6 +888,11 @@ uint16_t readADC_A6() {
   return result;
 }
 
+// https://forum.arduino.cc/t/ms5611-pressure-problem/543358/6
+float getAltitude(float press, float temp) {
+  return ((pow(( seaLevelPressure / press), 1.0 / 5.257) - 1.0) * (temp + 273.15)) / 0.0065;
+}
+
 
 uint8_t Joystick_Tastenwahl_33_6(uint16_t Tastaturwert)
 {
@@ -1069,7 +1092,7 @@ void setCalib(void)
 
 void setup()
 {
-   anzeigestatus = ANZEIGE_POT;
+   anzeigestatus = ANZEIGE_ADC;
    
    PCB_BOARD = BOARD_6;
    uint8_t ee[16];
@@ -1243,10 +1266,12 @@ void setup()
          }
             
       }
+      /*
       if(i == THROTTLE)
       {
          servomittearray[i] = 127;
       }
+      */
       //servomittearray[i] = analogRead(adcpinarrayA[i]);
       //Serial.print("i:\t");
       //Serial.print(i);
@@ -1285,44 +1310,7 @@ void setup()
    }
    
    //Serial.print("\n");
-   /*
-    kanalsettingarray[0][YAW][1] = 0x12; // level
-    kanalsettingarray[0][YAW][2] = 0x23; // expo
-    
-    kanalsettingarray[0][PITCH][1] = 0x22; // level
-    kanalsettingarray[0][PITCH][2] = 0x02; // expo
-    
-    
-    kanalsettingarray[0][ROLL][1] = 0x33; // level
-    kanalsettingarray[0][ROLL][2] = 0x02; // expo
-    
-    kanalsettingarray[0][THROTTLE][1] = 0x32; // level
-    kanalsettingarray[0][THROTTLE][2] = 0x03; // expo
-    
-    
-    potwert = servomittearray[0];  
-    
-    //Serial.print("setup EEPROM\n");
-    printeeprom(160);
-    */
-   
-   /*
-    for (uint8_t i = 0;i<NUM_SERVOS;i++)
-    {
-    EEPROM.update(2*(i + EEPROMINDEX_U),(potgrenzearray[i][1] & 0x00FF)); // lo byte
-    EEPROM.update(2*(i + EEPROMINDEX_U)+1,((potgrenzearray[i][1] & 0xFF00) >> 8)); // hi byte
-    EEPROM.update(2*(i + EEPROMINDEX_O),(potgrenzearray[i][0] & 0x00FF)); // lo byte
-    EEPROM.update(2*(i + EEPROMINDEX_O)+1,((potgrenzearray[i][0] & 0xFF00) >> 8)); // hi byte
-    
-    EEPROM.update(2*(i + EEPROMINDEX_M),(servomittearray[i] & 0x00FF)); // lo byte
-    EEPROM.update(2*(i + EEPROMINDEX_M)+1,((servomittearray[i] & 0xFF00) >> 8)); // hi byte
-    
-    }
-    //EEPROM.update(127,13);
-    delay(4);
-    */
-   
-   //printeeprom(160);
+
    
 } // setup
 
@@ -1355,7 +1343,10 @@ int Throttle_Map255(int val, int fromlow, int fromhigh,int tolow, int tohigh, bo
    return ( reverse ? 255 - levelint : levelint );
 }
 
-
+float fmap(float x, float in_min, float in_max, float out_min, float out_max) 
+{
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
 
 // Joystick center and its borders 
 int Border_Map(int val, int lower, int middle, int upper, bool reverse)
@@ -1433,6 +1424,24 @@ int Border_Mapvar255(uint8_t servo, int val, int lower, int middle, int upper, b
    return ( reverse ? 255 - levelint : levelint );
 }
 
+int Border_Mapvar255_Throttle(uint8_t servo, int val, int lower,  int upper, bool reverse)
+{
+   val = constrain(val, lower, upper); // Grenzen einhalten
+   val = map(val, lower, upper, 0, 255); // normieren auf 0 - 255
+   uint8_t levelwerta = levelwertarray[servo] & 0x07;
+   uint8_t levelwertb = (levelwertarray[servo] & 0x70)>>4;
+   
+   uint8_t expowerta = expowertarray[servo] & 0x07;
+   uint8_t expowertb = (expowertarray[servo] & 0x70)>>4;
+
+   intdiff = val;
+   expoint = expoarray8[expowertb][intdiff/2]; // nur 127 Werte in expoarray
+   levelint = expoint * (8-levelwertb) ;   
+   levelint /= 8; // 
+   
+   return  2 * ( reverse ? 255 - levelint : levelint );
+
+}
 
 
 uint16_t map_uint16(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max) 
@@ -1509,7 +1518,7 @@ void loop()
          updateModusScreen();
          u8g2.sendBuffer();
       }
-      
+      updateHomeScreen();
    }   // zeitintervall > 500
    
    // Tastatur
@@ -2324,8 +2333,9 @@ void loop()
          Serial.print(ackData[2]);
          Serial.print("\t3\t");
          Serial.print(ackData[3]);
+
          
-      Serial.print(" \n");
+         Serial.print(" \n");
       }
       switch(anzeigestatus)
       {
@@ -2367,6 +2377,31 @@ void loop()
          case ANZEIGE_TAST:
          {
             
+         }break;
+
+         case ANZEIGE_ADC:
+         {
+            Serial.print("\tbatteriespannung raw: ");
+            Serial.print(batteriespannungraw);
+            Serial.print("\tbatteriespannung: ");
+            Serial.print(batteriespannung);
+            Serial.print("\tUBatt: ");
+            Serial.print(UBatt);
+            Serial.print("\tbatterieanzeige: ");
+            Serial.print(batterieanzeige);
+            Serial.print("\t");
+
+            Serial.print("\tack-Spannung: ");
+            Serial.print(ackData[3]);
+            Serial.print("\tflyerbatteriespannung: ");
+            Serial.print(flyerbatteriespannung);
+            Serial.print("\tUFlyerBatt: ");
+            Serial.print(UFlyerBatt);
+              Serial.print("\tflyerbatterieanzeige: ");
+            Serial.print(flyerbatterieanzeige);
+            
+
+            Serial.print("\n");
          }break;
             
          case ANZEIGE_CALIB:
@@ -2427,41 +2462,55 @@ void loop()
       }
 
       //Serial.print(ackData[0]);
-      Serial.print("\t");
-      Serial.print("debouncecheck: ");
-      Serial.print(debouncecheck);
-      Serial.print("\n");
+      //Serial.print("\t");
+      //Serial.print("debouncecheck: ");
+      //Serial.print(debouncecheck);
+      //Serial.print("\n");
 
       loopcounter = 0;
       blinkcounter++;
       impulscounter+=16;
       digitalWrite(LOOPLED, ! digitalRead(LOOPLED));
-      
+      float faktor = 0.1;
       //analogWrite(BUZZPIN,127);
       
             //batteriespannung = readADC_A6();
+       batteriespannungraw = (float)analogRead(A6);
 
-      batteriespannung = analogRead(A6);
+      if(batteriespannung == 0)
+      {
+         batteriespannung = batteriespannungraw;
+      }
+      else
+      {
+         batteriespannung = batteriespannung + faktor * (batteriespannungraw - batteriespannung);
+      }
+      UBatt = (batteriespannung) / 154;
+
+      //batteriespannung = fmap(batteriespannung,60.0,900.0,0,44.0);
+      //batteriespannung = analogRead(A6);
        //     batteriespannung = analogRead(A1);
 
-      batteriearray[batteriemittelwertcounter] = batteriespannung;
       
       
-      batteriemittelwertcounter++;
-      batteriemittelwertcounter &= 0x07;
-      batteriemittel = 0;
-      for(uint8_t i=0;i<8;i++)
+
+       flyerbatteriespannungraw = float(ackData[3]);
+      
+      if(flyerbatteriespannung == 0)
       {
-         batteriemittel += batteriearray[i];
+         flyerbatteriespannung = flyerbatteriespannungraw;
       }
-      batteriemittel /= 8;
-         //Serial.print("\t ");
-         //Serial.print(batteriespannung);
-         //Serial.print("\t ");
-         
-      
-      
-      UBatt = float(batteriespannung) / 154;
+      else
+      {
+         flyerbatteriespannung = flyerbatteriespannung + faktor * (flyerbatteriespannungraw - flyerbatteriespannung);
+      }
+      flyerbatteriespannung = constrain(flyerbatteriespannung,60,240);
+      UFlyerBatt = fmap(flyerbatteriespannung,60.0,240.0,0,44.0);
+
+      flyerbatterieanzeige = (uint16_t)UFlyerBatt;
+
+
+
 
       /*
       Serial.print(batteriemittel);
@@ -2571,7 +2620,7 @@ void loop()
       //batterieanzeige = (0x50*batteriespannung)/0x6B/8; // resp. /107
       batterieanzeige = (0x50*batteriespannung)/0x9A/8; // integer-operation, resp. /154 als float
       
-      batterieanzeige = (uint16_t)data.yaw; 
+     
 
       /*
        Serial.print(batteriespannung);
@@ -2843,7 +2892,7 @@ void loop()
       //data.throttle = Throttle_Map(potwertarray[THROTTLE],throttlemitte, POTHI,0,255, false );   
       //data.throttle = Throttle_Map255(potwertarray[THROTTLE],servomittearray[THROTTLE], potgrenzearray[throttle][0],10,240, false ); // nur eine haelfte 
       
-      data.throttle = Border_Mapvar255(THROTTLE,potwertarray[THROTTLE],potgrenzearray[THROTTLE][1],servomittearray[THROTTLE],potgrenzearray[THROTTLE][0],true);
+      data.throttle = Border_Mapvar255_Throttle(THROTTLE,potwertarray[THROTTLE],potgrenzearray[THROTTLE][1],potgrenzearray[THROTTLE][0],false);
 
       
       //data.yaw = 13;
@@ -2866,6 +2915,12 @@ void loop()
          if (radio.isAckPayloadAvailable()) 
          {
             radio.read(&ackData, sizeof(ackData));
+            temperaturint = ackData[0] * 2;
+            float temperaturfloat = temperaturint;
+            pressureint = (ackData[1] << 8) | ackData[2];
+            float pressurefloat = pressureint/10;
+            //altitude = getAltitude(pressurefloat,temperaturfloat);
+            altitudeint = altitude;
             /*
              //Serial.print("ACK erhalten: ");
              //Serial.print("\t");

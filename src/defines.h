@@ -17,6 +17,7 @@
 #define ANZEIGE_POT     1
 #define ANZEIGE_TAST    0
 #define ANZEIGE_CALIB   2
+#define ANZEIGE_ADC     3
 
 
 #define HOMESCREEN      0
