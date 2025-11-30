@@ -106,7 +106,6 @@ uint8_t PCB_BOARD = 6;
 
 uint16_t                   impulstimearray[NUM_SERVOS] = {};
 
-
 const int                  adcpinarrayA[NUM_SERVOS] = {A3,A6,A1,A0};    // pins der Pots
 
 const int                  adcpinarrayB[NUM_SERVOS] = {A2,A3,A1,A0};    // pins der Pots
@@ -195,7 +194,6 @@ uint16_t levelintpitchb = 0;
 float batteriespannung = 0;
 float batteriespannungraw = 0;
 
-uint16_t batteriearray[8] = {};
 uint16_t batteriemittel = 0;
 uint8_t batteriemittelwertcounter = 0;
 uint16_t batterieanzeige = 0;
@@ -395,13 +393,16 @@ ISR(TCB0_INT_vect)
       
       if (pulseState ) 
       {
-         digitalWrite(PPM_DATA_PIN, HIGH); // kurzer Impuls
+
+         //digitalWrite(PPM_DATA_PIN, HIGH); // kurzer Impuls
+         PORTF.OUTSET = PIN5_bm;
          TCB0.CCMP = PULSE_LENGTH ; // µs -> TCB läuft mit 1/3 µs (Prescaler 2 bei 3,33 MHz)
          pulseState = false;
       } 
       else 
       {
-         digitalWrite(PPM_DATA_PIN, LOW); // Pause = Kanalwert
+         //digitalWrite(PPM_DATA_PIN, LOW); // Pause = Kanalwert
+         PORTF.OUTCLR = PIN5_bm;
          if (currentChannel < NUM_SERVOS) 
          {
             
@@ -1089,6 +1090,31 @@ void setCalib(void)
 }
 
 
+/*
+// PF5 als Ausgang
+PORTF.DIRSET = PIN5_bm;
+
+// PF5 = High
+PORTF.OUTSET = PIN5_bm;
+
+// PF5 = Low
+PORTF.OUTCLR = PIN5_bm;
+
+// PF5 toggeln
+PORTF.OUTTGL = PIN5_bm;
+
+// PF5 als Eingang
+PORTF.DIRCLR = PIN5_bm;      // Bit 5 Richtung = Eingang
+PORTF.PIN5CTRL = 0x00;       // Standard Input, keine Pullups
+
+// PF5 als Input mit Pull-Up
+PORTF.DIRCLR = PIN5_bm;      // Richtung: Eingang
+PORTF.PIN5CTRL = PORT_PULLUPEN_bm;   // interner Pull-Up ein
+
+// Wert lesen
+uint8_t v = (PORTF.IN & PIN5_bm) != 0;
+*/
+
 
 void setup()
 {
@@ -1119,11 +1145,22 @@ void setup()
    Serial.begin(9600);
    
    // PPM decode
-   pinMode(PPM_DIR_PIN, OUTPUT);
-   pinMode(PPM_DATA_PIN, OUTPUT);
-   digitalWrite(PPM_DATA_PIN,LOW);
+
+   //pinMode(PPM_DIR_PIN, OUTPUT);
+   PORTA.DIRCLR = PIN0_bm;      // Richtung: Eingang
+   PORTA.PIN0CTRL = PORT_PULLUPEN_bm;   // interner Pull-Up ein
+
+
+
+   // PF5 als Ausgang
+   PORTF.DIRSET = PIN5_bm;
+   // PF5 = Low
+   PORTF.OUTCLR = PIN5_bm;
+
+   //pinMode(PPM_DATA_PIN, OUTPUT);
+   //digitalWrite(PPM_DATA_PIN,LOW);
+
    
-   //attachInterrupt(digitalPinToInterrupt(PPM_PIN), ppmISR, RISING);
    
    pinMode(BUZZPIN,OUTPUT);
    digitalWrite(BUZZPIN,LOW);
@@ -2906,6 +2943,9 @@ void loop()
       data.aux2 = digitalRead(7);                                          // CH6
       radiocounter++;
       
+      if((PORTA.IN & PIN0_bm) == 0)  // Stecker nicht eingesteckt
+      {
+
       if (radio.write(&data, sizeof(data)))
       {
          radiocounter++; 
@@ -2947,5 +2987,6 @@ void loop()
          digitalWrite(BUZZPIN,!(digitalRead(BUZZPIN)));
          errcounter++;
       }
+   }
    }
 }
