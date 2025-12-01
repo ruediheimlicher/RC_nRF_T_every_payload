@@ -75,6 +75,8 @@ RF24 radio(CE_PIN, CSN_PIN);
 
 #define BATT_PIN         A6
 
+#define OSZI_ON   1
+
 uint8_t debouncecheck = 0;
 
 uint16_t loopcounter = 0;
@@ -426,14 +428,25 @@ ISR(TCB0_INT_vect)
             {
                // Synclücke
                pausecounter = 0;
-               digitalWrite(PPM_DIR_PIN,HIGH);
+               if(OSZI_ON)
+               {
+                  PORTA.OUTSET = PIN0_bm;
+                  //digitalWrite(PPM_DIR_PIN,HIGH); // OSZI
+               }
+               
+
+
                //TCB0.CCMP = (restTime > 0 ? restTime : 5000) * 2;
                //TCB0.CCMP = 8 * restTime ;
                //TCB0.CCMP  = 60000;
                //restCCM = TCB0.CCMP;
                currentChannel = 0;
                //restTime = FRAME_LENGTH;
-               digitalWrite(PPM_DIR_PIN,LOW);
+               if(OSZI_ON)
+               {
+                  PORTA.OUTCLR = PIN0_bm;
+                  //digitalWrite(PPM_DIR_PIN,LOW);
+               }
                pulseState = true;
             }
             
@@ -513,6 +526,7 @@ volatile byte channel = 0;
 const byte maxChannels = 8;
 //volatile unsigned int ppmValues[maxChannels];
 
+/*
 void ppmISR() 
 {
    unsigned long now = micros();
@@ -535,7 +549,7 @@ void ppmISR()
       
    }
 }
-
+*/
 
 void updatemitte(void)
 {
@@ -1147,9 +1161,19 @@ void setup()
    // PPM decode
 
    //pinMode(PPM_DIR_PIN, OUTPUT);
-   PORTA.DIRCLR = PIN0_bm;      // Richtung: Eingang
-   PORTA.PIN0CTRL = PORT_PULLUPEN_bm;   // interner Pull-Up ein
 
+   if(OSZI_ON)
+   {
+      
+   PORTA.DIRSET = PIN0_bm;      // Richtung: Ausgang
+   PORTA.OUTSET = PIN0_bm;
+   }
+   else
+   {
+
+    PORTA.DIRCLR = PIN0_bm;  // Engang
+    PORTA.PIN0CTRL = PORT_PULLUPEN_bm; 
+   }
 
 
    // PF5 als Ausgang
@@ -1331,7 +1355,7 @@ void setup()
    
    setupPPM();
    
-   setupDebounce();
+  // setupDebounce();
    
    
    //Serial.print("\n"); 
@@ -1548,7 +1572,7 @@ void loop()
       else
       {
          blinkstatus = 0;
-         noTone(BUZZPIN);
+         //noTone(BUZZPIN);
       }
       if(curr_screen == 5)
       {
@@ -2786,7 +2810,7 @@ void loop()
       
    }
    
-   if(paketcounter > 10) // 20ms
+   //if(paketcounter > 10) // 20ms
    {
       paketcounter = 0;
       

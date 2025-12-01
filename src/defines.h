@@ -39,8 +39,8 @@
 #define CALIB_START     3
 #define CALIB_END       4
 
-#define PPM_DIR_PIN     2
-#define PPM_DATA_PIN    3  // PPM-Eingang an Pin 3
+#define PPM_DIR_PIN     2 //                          PORTA.DIRCLR = PIN0_bm; 
+#define PPM_DATA_PIN    3  // PPM-Eingang an Pin 3    PORTF.DIRSET = PIN5_bm;
 #define  NUM_CHANNELS   8;
 #define  FRAME_LENGTH   40000; // 20 ms
 #define  SYNC_PULSE     30;     // 300 µs
