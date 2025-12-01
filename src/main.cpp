@@ -393,9 +393,10 @@ ISR(TCB0_INT_vect)
       // Impuls erzeugen
       
       
-      if (pulseState ) 
+      if (pulseState) 
       {
          digitalWrite(PPM_DATA_PIN, HIGH); // kurzer Impuls
+
          TCB0.CCMP = PULSE_LENGTH ; // µs -> TCB läuft mit 1/3 µs (Prescaler 2 bei 3,33 MHz)
          pulseState = false;
       } 
@@ -2749,7 +2750,7 @@ void loop()
       
    }
    
-   if(paketcounter > 10) // 20ms
+   //if(paketcounter > 10) // 20ms
    {
       paketcounter = 0;
       
@@ -2906,6 +2907,8 @@ void loop()
       data.aux2 = digitalRead(7);                                          // CH6
       radiocounter++;
       
+      if((PORTA.IN & PIN0_bm) == 0)  // Stecker nicht eingesteckt
+      {
       if (radio.write(&data, sizeof(data)))
       {
          radiocounter++; 
@@ -2947,5 +2950,6 @@ void loop()
          digitalWrite(BUZZPIN,!(digitalRead(BUZZPIN)));
          errcounter++;
       }
+   }
    }
 }
