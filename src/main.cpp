@@ -1121,7 +1121,7 @@ void setup()
    Serial.begin(9600);
    
    // PPM decode
-   pinMode(PPM_DIR_PIN, OUTPUT);
+   pinMode(PPM_DIR_PIN, INPUT_PULLUP);
    pinMode(PPM_DATA_PIN, OUTPUT);
    digitalWrite(PPM_DATA_PIN,LOW);
    
@@ -2908,7 +2908,8 @@ void loop()
       data.aux2 = digitalRead(7);                                          // CH6
       radiocounter++;
       
-      if((PORTA.IN & PIN0_bm) == 0)  // Stecker nicht eingesteckt
+      //if((PORTA.IN & PIN0_bm) == 0)  // Stecker nicht eingesteckt
+      if(digitalRead(PPM_DIR_PIN) == 0)
       {
       if (radio.write(&data, sizeof(data)))
       {
