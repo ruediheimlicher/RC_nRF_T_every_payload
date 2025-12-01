@@ -57,7 +57,7 @@ RF24 radio(CE_PIN, CSN_PIN);
 #define EEPROMEXPOSETTINGS  0x48
 
 
-#define BLINKRATE 0x1EFF
+#define BLINKRATE 0xFF
 
 // defines for PINS
 // links
@@ -426,14 +426,14 @@ ISR(TCB0_INT_vect)
             {
                // Synclücke
                pausecounter = 0;
-               digitalWrite(PPM_DIR_PIN,HIGH);
+               //digitalWrite(PPM_DIR_PIN,HIGH);
                //TCB0.CCMP = (restTime > 0 ? restTime : 5000) * 2;
                //TCB0.CCMP = 8 * restTime ;
                //TCB0.CCMP  = 60000;
                //restCCM = TCB0.CCMP;
                currentChannel = 0;
                //restTime = FRAME_LENGTH;
-               digitalWrite(PPM_DIR_PIN,LOW);
+               //digitalWrite(PPM_DIR_PIN,LOW);
                pulseState = true;
             }
             
@@ -513,6 +513,7 @@ volatile byte channel = 0;
 const byte maxChannels = 8;
 //volatile unsigned int ppmValues[maxChannels];
 
+/*
 void ppmISR() 
 {
    unsigned long now = micros();
@@ -521,10 +522,10 @@ void ppmISR()
    
    if (pulseLength > 3000) 
    {
-      digitalWrite(PPM_DIR_PIN,HIGH);
+      //digitalWrite(PPM_DIR_PIN,HIGH); // OSZI
       // Sync-Pause erkannt: neues Frame beginnt
       channel = 0;
-      //digitalWrite(PPM_DIR_PIN, !(digitalRead(PPM_DIR_PIN)));
+      //digitalWrite(PPM_DIR_PIN, !(digitalRead(PPM_DIR_PIN))); 
       digitalWrite(PPM_DIR_PIN,LOW);
    } 
    else if (channel < maxChannels) 
@@ -535,7 +536,7 @@ void ppmISR()
       
    }
 }
-
+*/
 
 void updatemitte(void)
 {
@@ -1093,7 +1094,7 @@ void setCalib(void)
 
 void setup()
 {
-   anzeigestatus = ANZEIGE_ADC;
+   anzeigestatus = ANZEIGE_POT;
    
    PCB_BOARD = BOARD_6;
    uint8_t ee[16];
@@ -1120,7 +1121,10 @@ void setup()
    Serial.begin(9600);
    
    // PPM decode
-   pinMode(PPM_DIR_PIN, OUTPUT);
+   //pinMode(PPM_DIR_PIN, INPUT);
+   PORTA.DIRCLR = PIN0_bm;     // Richtung: Eingang
+   PORTA.PIN0CTRL = PORT_PULLUPEN_bm;   // interner Pull-up aktiv
+
    pinMode(PPM_DATA_PIN, OUTPUT);
    digitalWrite(PPM_DATA_PIN,LOW);
    
@@ -2370,7 +2374,7 @@ void loop()
             Serial.print(ackData[2]);
             Serial.print("\t3\t");
             Serial.print(ackData[3]);
-            Serial.print("\t\t");
+            Serial.print("\n");
 
             
          }break;
@@ -2909,47 +2913,47 @@ void loop()
       
       if((PORTA.IN & PIN0_bm) == 0)  // Stecker nicht eingesteckt
       {
-      if (radio.write(&data, sizeof(data)))
-      {
-         radiocounter++; 
+         if (radio.write(&data, sizeof(data)))
+         {
+            radiocounter++; 
 
-         // ********************
-         // ACK Payload ********
-         if (radio.isAckPayloadAvailable()) 
-         {
-            radio.read(&ackData, sizeof(ackData));
-            temperaturint = ackData[0] * 2;
-            float temperaturfloat = temperaturint;
-            pressureint = (ackData[1] << 8) | ackData[2];
-            float pressurefloat = pressureint/10;
-            //altitude = getAltitude(pressurefloat,temperaturfloat);
-            altitudeint = altitude;
-            /*
-             //Serial.print("ACK erhalten: ");
-             //Serial.print("\t");
-             Serial.print(ackData[0]);
-             Serial.print("\t");
-             Serial.print(ackData[1]);
-              Serial.print("\t");
-              Serial.print(ackData[2]);
-             Serial.print("\t");
-             Serial.print(ackData[3]);
-            Serial.print(" \n");
-            */
-         } 
-         else 
-         {
-            //Serial.println(F("Keine ACK-Daten erhalten"));
+            // ********************
+            // ACK Payload ********
+            if (radio.isAckPayloadAvailable()) 
+            {
+               radio.read(&ackData, sizeof(ackData));
+               temperaturint = ackData[0] * 2;
+               float temperaturfloat = temperaturint;
+               pressureint = (ackData[1] << 8) | ackData[2];
+               float pressurefloat = pressureint/10;
+               //altitude = getAltitude(pressurefloat,temperaturfloat);
+               altitudeint = altitude;
+               /*
+               //Serial.print("ACK erhalten: ");
+               //Serial.print("\t");
+               Serial.print(ackData[0]);
+               Serial.print("\t");
+               Serial.print(ackData[1]);
+               Serial.print("\t");
+               Serial.print(ackData[2]);
+               Serial.print("\t");
+               Serial.print(ackData[3]);
+               Serial.print(" \n");
+               */
+            } 
+            else 
+            {
+               //Serial.println(F("Keine ACK-Daten erhalten"));
+            }
+            // ********************
+            // ********************
          }
-         // ********************
-         // ********************
+         else
+         {
+            //Serial.println("radio error\n");
+            digitalWrite(BUZZPIN,!(digitalRead(BUZZPIN)));
+            errcounter++;
+         }
       }
-      else
-      {
-         //Serial.println("radio error\n");
-         digitalWrite(BUZZPIN,!(digitalRead(BUZZPIN)));
-         errcounter++;
-      }
-   }
    }
 }
