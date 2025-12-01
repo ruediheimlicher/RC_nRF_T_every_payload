@@ -57,7 +57,7 @@ RF24 radio(CE_PIN, CSN_PIN);
 #define EEPROMEXPOSETTINGS  0x48
 
 
-#define BLINKRATE 0x1EFF
+#define BLINKRATE 0xFF
 
 // defines for PINS
 // links
@@ -426,14 +426,14 @@ ISR(TCB0_INT_vect)
             {
                // Synclücke
                pausecounter = 0;
-               digitalWrite(PPM_DIR_PIN,HIGH);
+               //digitalWrite(PPM_DIR_PIN,HIGH); // OSZI
                //TCB0.CCMP = (restTime > 0 ? restTime : 5000) * 2;
                //TCB0.CCMP = 8 * restTime ;
                //TCB0.CCMP  = 60000;
                //restCCM = TCB0.CCMP;
                currentChannel = 0;
                //restTime = FRAME_LENGTH;
-               digitalWrite(PPM_DIR_PIN,LOW);
+               //digitalWrite(PPM_DIR_PIN,LOW);
                pulseState = true;
             }
             
@@ -513,6 +513,7 @@ volatile byte channel = 0;
 const byte maxChannels = 8;
 //volatile unsigned int ppmValues[maxChannels];
 
+/*
 void ppmISR() 
 {
    unsigned long now = micros();
@@ -535,7 +536,7 @@ void ppmISR()
       
    }
 }
-
+*/
 
 void updatemitte(void)
 {
