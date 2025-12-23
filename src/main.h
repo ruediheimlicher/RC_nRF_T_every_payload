@@ -20,15 +20,15 @@ struct Signal
 
 
 
-#define BATTX        118
+#define BATTX        119
 #define BATTY        2
 #define BATTH        44
-#define BATTB        7
+#define BATTB        6
 
-#define FLYBATTX        102
+#define FLYBATTX        100
 #define FLYBATTY        2
 #define FLYBATTH        44
-#define FLYBATTB        12
+#define FLYBATTB        14
 
 
 // defines for array pos
