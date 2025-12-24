@@ -2815,6 +2815,7 @@ void loop()
             if(potwert >= potgrenzearray[i][0])
             {
                potgrenzearray[i][0] = potwert; // pothi
+
             }
             if(potwert < potgrenzearray[i][1])
             {
@@ -2920,7 +2921,7 @@ void loop()
       
       //Serial.println(data.yaw);
       // if(curr_model == 0)
-      if(!(calibstatus &(1<<CALIB_START) )  )
+      if(!(calibstatus &(1<<CALIB_START) )  ) // bei calib soll roll ausgegeben werden
       {
          potgrenzearray[ROLL][0] = servomittearray[ROLL];
          potgrenzearray[ROLL][1] = servomittearray[ROLL];
@@ -2948,7 +2949,8 @@ void loop()
       radiocounter++;
       
       //if((PORTA.IN & PIN0_bm) == 0)  // Stecker nicht eingesteckt
-      if(digitalRead(PPM_DIR_PIN) == 0)
+      
+      if(digitalRead(PPM_DIR_PIN) == 0) // Senden nur ohne Master-Stecker
       {
          if (radio.write(&data, sizeof(data)))
          {
