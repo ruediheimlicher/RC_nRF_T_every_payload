@@ -18,6 +18,7 @@
 #define ANZEIGE_TAST    0
 #define ANZEIGE_CALIB   2
 #define ANZEIGE_ADC     3
+#define ANZEIGE_SLAVE   5
 
 #define ANZEIGE_DATA 7
 
