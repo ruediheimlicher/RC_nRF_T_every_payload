@@ -413,7 +413,7 @@ ISR(TCB0_INT_vect)
          {
             
             //uint16_t delay = constrain(ppm[currentChannel], CHANNEL_MIN, CHANNEL_MAX);
-            uint16_t delay = map(( potwertarray[currentChannel]),0,1000,2000,1000);
+            uint16_t delay = map(( potwertarray[currentChannel]),potgrenzearray[currentChannel][1],potgrenzearray[currentChannel][0],1000,2000);
             //impulsdelayarray[currentChannel] = delay;
             
             TCB0.CCMP = 8 * delay;   // µs → Tickskalierung

@@ -108,6 +108,8 @@ extern uint16_t   batterieanzeige;
 extern float      UFlyerBatt;
 extern uint16_t   flyerbatterieanzeige;
 
+extern uint16_t potwertarray[4];
+extern uint16_t potgrenzearray[4][2];
 
 extern Signal data;
 
@@ -310,6 +312,7 @@ void setHomeScreen()
 void updateHomeScreen()
 {
  
+
    if(savestatus == CHANGED)
    {
       charh = u8g2.getMaxCharHeight()-1;
@@ -352,13 +355,25 @@ void updateHomeScreen()
    {
       
       u8g2.setDrawColor(0);
-      u8g2.drawBox(4,46,120,18);
+      u8g2.drawBox(4,56,120,18);
       u8g2.setDrawColor(1);
       //u8g2.sendBuffer();
       savestatus = 1;
    }
 
       char buf0[4];
+
+      /*
+      //u8g2.setCursor(0,18);
+      //u8g2.print(data.yaw);
+      sprintf(buf0, "%3d", potwertarray[0]);
+      u8g2.drawStr(0,18,buf0);
+       sprintf(buf0, "%3d", potgrenzearray[PITCH][0]);
+      u8g2.drawStr(30,18,buf0);
+       sprintf(buf0, "%3d", potgrenzearray[PITCH][1]);
+      u8g2.drawStr(60,18,buf0);
+      //u8g2.print(potwertarray[0]);
+      */
 /*
       // Yaw
       //u8g2.setCursor(4,30);
