@@ -39,21 +39,21 @@ extern uint8_t                   calibstatus;
 
 extern uint16_t                   batteriespannung;
 
-extern uint16_t pressureint;
-extern uint8_t temperaturint;
-extern float pressurefloat;
-extern float temperaturfloat;
-extern float altitude;
-extern uint16_t altitudeint;
+extern uint16_t                  pressureint;
+extern uint16_t                  temperaturint;
+extern float                     pressurefloat;
+extern float                     temperaturfloat;
+extern float                     altitude;
+extern uint16_t                  altitudeint;
 
-extern uint16_t startaltitudeint;
-extern uint16_t diffaltitudeint;
+extern uint16_t                  startaltitudeint;
+extern uint16_t                  diffaltitudeint;
 
 
-#define BLINKPFEILUP    0
-#define BLINKPFEILDOWN    1
+#define BLINKPFEILUP             0
+#define BLINKPFEILDOWN           1
 
-extern uint8_t                      calibstatus;
+extern uint8_t                    calibstatus;
 
 
 #define cursortab0 2
@@ -64,7 +64,7 @@ extern uint8_t                      calibstatus;
 #define cursortab5 78
 #define cursortab6 90
 #define cursortab7 100
-extern   uint8_t cursortab[10] = {cursortab0,cursortab1,cursortab2,cursortab3,cursortab4,cursortab5,cursortab6,cursortab7,cursortab0,cursortab0};
+//extern   uint8_t cursortab[10] = {cursortab0,cursortab1,cursortab2,cursortab3,cursortab4,cursortab5,cursortab6,cursortab7,cursortab0,cursortab0};
 //extern  uint16_t  cursorpos[8][8]; // Aktueller screen: werte fuer page und daraufliegende col fuer cursor (hex). geladen aus progmem
 
 extern uint16_t   stopsekunde;
@@ -108,8 +108,8 @@ extern uint16_t   batterieanzeige;
 extern float      UFlyerBatt;
 extern uint16_t   flyerbatterieanzeige;
 
-extern uint16_t potwertarray[4];
-extern uint16_t potgrenzearray[4][2];
+//extern uint16_t potwertarray[4];
+//extern uint16_t potgrenzearray[4][2];
 
 extern Signal data;
 
@@ -185,7 +185,7 @@ void oled_vertikalbalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint8
   ////Serial.print(wert);
   
   ////Serial.print("\n");
-  
+  uint8_t anzeige = map(wert-30,0,12,0,h); 
   
   u8g2.setDrawColor(0);
   u8g2.drawBox(x+1,y+1,b-2,h-2);
@@ -200,7 +200,6 @@ void oled_vertikalbalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint8
 void oled_batteriebalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint16_t wert)
 {
  //uint8_t anzeige = map(wert-30,0,12,0,h); // Bereich 3-4.2V, 1.2V
-
    uint8_t min = map(2,0,12,0,h);
   uint8_t anzeige = wert;
 
