@@ -1127,7 +1127,7 @@ void setup()
    
    analogReference(EXTERNAL);
    
-   Serial.begin(9600);
+   //Serial.begin(9600);
    
    // PPM decode
    pinMode(PPM_DIR_PIN, INPUT_PULLUP);
@@ -1533,8 +1533,6 @@ void loop()
    }   // zeitintervall > 500
    
    // Tastatur
-   
-   
    if (tastaturstatus & (1<<TASTE_OK) && Taste) // Menu ansteuern
    {
       tastaturcounter = 0;
@@ -2339,9 +2337,6 @@ void loop()
       
       
    }// if TASTE_OK
-   
-   
-   
    // end Tastatur
    
    if(loopcounter >= BLINKRATE)
@@ -2543,7 +2538,8 @@ void loop()
       //flyerbatteriespannung = constrain(flyerbatteriespannung,60,240);
       // y = 0.0137x + 5.1273
 
-      UFlyerBatt = 0.0141 * flyerbatteriespannung + 5.0434;
+     // UFlyerBatt = 0.0141 * flyerbatteriespannung + 5.0434;
+     UFlyerBatt = flyerbatteriespannung / 0x47  + 5;
 
       //Serial.print(UFlyerBatt);
       //Serial.print("\n");
@@ -2944,9 +2940,9 @@ void loop()
       
       //data.throttle = Border_Map(potwertarray[THROTTLE],0, 340,570, false );      // Potentiometer
       
-      data.aux1 = 0;//digitalRead(5);                                          // CH5
-      data.aux2 = 0;//digitalRead(7);                                          // CH6
-      radiocounter++;
+      //data.aux1 = 0;//digitalRead(5);                                          // CH5
+      //data.aux2 = 0;//digitalRead(7);                                          // CH6
+      //radiocounter++;
       
       //if((PORTA.IN & PIN0_bm) == 0)  // Stecker nicht eingesteckt
       
