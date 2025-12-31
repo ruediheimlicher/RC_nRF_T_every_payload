@@ -241,10 +241,20 @@ void oled_flyerbatteriebalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,
 
 void oled_setBatterieWert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,float wert)
 {
+   /*
       u8g2.setCursor(x,y);
       u8g2.setDrawColor(0);
       u8g2.print(wert,1);
       u8g2.setDrawColor(1);
+   */
+      u8g2.setFontDirection(3);
+    u8g2.setFont(u8g2_font_t0_11_mr);  
+
+      u8g2.setCursor(x,y);
+      //u8g2.setDrawColor(0);
+      u8g2.print(wert,1);
+      u8g2.setDrawColor(1);
+      u8g2.setFontDirection(0);
 
       
 }
@@ -319,7 +329,7 @@ void updateHomeScreen()
       u8g2.drawStr(4,62,"SAVE?");
       //u8g2.setFontMode(0);
       //u8g2.setDrawColor(0);
-      u8g2.drawStr(48,48 + charh,"Y" );
+      u8g2.drawStr(46,48 + charh,"Y" );
       
       //u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
@@ -354,7 +364,7 @@ void updateHomeScreen()
    {
       
       u8g2.setDrawColor(0);
-      u8g2.drawBox(4,56,120,18);
+      u8g2.drawBox(4,46,120,18);
       u8g2.setDrawColor(1);
       //u8g2.sendBuffer();
       savestatus = 1;
@@ -443,22 +453,21 @@ void updateHomeScreen()
      // uint8_t p = curr_model;
 
 
-  //oled_batteriebalken_setwert(BATTX,BATTY,BATTB,BATTH,batterieanzeige);
-   oled_batteriebalken_setwert(BATTX,BATTY,BATTB,BATTH+1,batterieanzeige);
+   oled_batteriebalken_setwert(BATTX,BATTY+8,BATTB,BATTH+1,batterieanzeige);
 
-
-   //u8g2.setFont(u8g2_font_t0_12_mr);  
+   oled_setBatterieWert(BATTX+8,BATTY+BATTH+18,BATTB+18,14,UBatt);
    
-   //oled_setBatterieWert(BATTX,BATTY+BATTH+16,BATTB,26,UBatt);
-
-
-   oled_flyerbatteriebalken_setwert(FLYBATTX,FLYBATTY,FLYBATTB,FLYBATTH,flyerbatterieanzeige);
    //u8g2.setFont(u8g2_font_t0_14_mr);  
    
    //oled_setBatterieWert(BATTX,BATTY+BATTH+16,BATTB,26,UBatt);
-   oled_setBatterieWert(FLYBATTX,FLYBATTY+FLYBATTH+18,FLYBATTB+18,14,UFlyerBatt);
 
    u8g2.setFont(u8g2_font_t0_15_mr);  
+
+   oled_flyerbatteriebalken_setwert(FLYBATTX,FLYBATTY,FLYBATTB,FLYBATTH,flyerbatterieanzeige);
+
+   oled_setBatterieWert(FLYBATTX+8,FLYBATTY+FLYBATTH+18,FLYBATTB+18,14,UFlyerBatt);
+
+   
    //
    //uint8_t la = kanalsettingarray[0][0][1] & 0x07;
    //uint8_t  lb = (kanalsettingarray[0][0][1] & 0x70)>>4;
@@ -543,7 +552,7 @@ void setModellScreen() // Auswahl Funktion fuer ausgewaehltes Modell
    u8g2.clear();
    resetRegister();
    //blink_cursorpos=0xFFFF;
-   char_x = 36;
+   char_x = 16;
    char_y = 45;
    //u8g2.drawFrame(char_y,char_y,64,18);
    u8g2.setDrawColor(1);
@@ -564,7 +573,7 @@ void updateModellScreen(void)
    uint8_t i = 0;
    u8g2.setFont(u8g2_font_t0_15_mr);  
    charh = u8g2.getMaxCharHeight()-1;
-   char_x = 48;
+   char_x = 28;
    while (char_y < 64)
    {
        u8g2.setDrawColor(1);
@@ -594,7 +603,7 @@ void setFunktionScreen() // Auswahl Aktion
    u8g2.clear();
    resetRegister();
    //blink_cursorpos=0xFFFF;
-   char_x = 18;
+   char_x = 16;
    char_y = 45;
    //u8g2.drawFrame(char_y,char_y,64,18);
    u8g2.setDrawColor(1);
@@ -611,7 +620,7 @@ void updateFunktionScreen()
    //u8g2.setFont(u8g2_font_t0_14_mr);  
    u8g2.setFont(u8g2_font_t0_15_mr);  
    charh = u8g2.getMaxCharHeight()-1;
-   char_x = 36;
+   char_x = 26;
 
    uint8_t feldx = 110;
    uint8_t feldyO = 6;
@@ -705,7 +714,7 @@ void setAktionScreen()
    
    resetRegister();
    //blink_cursorpos=0xFFFF;
-   char_x = 18;
+   char_x = 16;
    char_y = 45;
    u8g2.setFont(u8g2_font_t0_15_mr);
    u8g2.setDrawColor(1);
