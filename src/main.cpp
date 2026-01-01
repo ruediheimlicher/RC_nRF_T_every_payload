@@ -230,7 +230,7 @@ uint16_t eepromprelltimer = 0;
 uint16_t intdiff = 0;
 uint16_t intdiffpitch = 0;
 
-Bounce2::Button eepromtaste = Bounce2::Button();
+//Bounce2::Button eepromtaste = Bounce2::Button();
 
 
 #define ANZ_REP 8
@@ -1103,15 +1103,34 @@ void setCalib(void)
 
 void OSZIA_HI(void)
 {
-   digitalWrite(OSZIA_PIN, HIGH);
+   VPORTB.OUT |= (1 << 2);
+   //digitalWrite(OSZIA_PIN, HIGH);
 }
 void OSZIA_LO(void)
 {
-   digitalWrite(OSZIA_PIN, LOW);
+   //digitalWrite(OSZIA_PIN, LOW);
+   VPORTB.OUT &= ~(1 << 2);
 }
 void OSZIA_TOG()
 {
    digitalWrite(OSZIA_PIN, !(digitalRead(OSZIA_PIN)));
+   VPORTB.OUT ^= (1 << 2);
+}
+
+void OSZIB_HI(void)
+{
+   VPORTA.OUT |= (1 << 1);
+   //digitalWrite(OSZIA_PIN, HIGH);
+}
+void OSZIB_LO(void)
+{
+   //digitalWrite(OSZIA_PIN, LOW);
+   VPORTA.OUT &= ~(1 << 1);
+}
+void OSZIB_TOG()
+{
+   digitalWrite(OSZIA_PIN, !(digitalRead(OSZIA_PIN)));
+   VPORTA.OUT ^= (1 << 1);
 }
 
 
@@ -1141,10 +1160,11 @@ void setup()
    
    analogReference(EXTERNAL);
    
-   Serial.begin(9600);
+   //Serial.begin(9600);
    
-   pinMode(OSZIA_PIN, OUTPUT);
-   
+   //pinMode(OSZIA_PIN, OUTPUT);
+   VPORTA.DIR |= (1 << 1);
+   VPORTB.DIR |= (1 << 2);
 
    // PPM decode
    pinMode(PPM_DIR_PIN, INPUT_PULLUP);
@@ -1154,7 +1174,7 @@ void setup()
    //attachInterrupt(digitalPinToInterrupt(PPM_PIN), ppmISR, RISING);
    
    pinMode(BUZZPIN,OUTPUT);
-   digitalWrite(BUZZPIN,LOW);
+   digitalWrite(BUZZPIN,HIGH);
    
    curr_steuerstatus = MODELL;
    //savestatus = 0xFF;
@@ -1192,9 +1212,9 @@ void setup()
    
    
    //pinMode(EEPROMTASTE,INPUT_PULLUP);
-   eepromtaste.attach( EEPROMTASTE ,  INPUT_PULLUP ); 
-   eepromtaste.interval(5);
-   eepromtaste.setPressedState(LOW);
+   //eepromtaste.attach( EEPROMTASTE ,  INPUT_PULLUP ); 
+   //eepromtaste.interval(5);
+   //eepromtaste.setPressedState(LOW);
    
    
    //digitalWrite(EEPROMTASTE, HIGH);
@@ -1511,7 +1531,9 @@ void loop()
    { 
       zeitintervall = 0;
 
-      OSZIA_LO();
+      //OSZIA_LO();
+      //VPORTB.OUT ^= (1 << 5); 
+      //VPORTB.OUT &= ~(1 << 2);
       //digitalWrite(OSZIA_PIN,LOW);
       //digitalWrite(BUZZPIN,LOW);
       sekundencounter++;
@@ -1522,7 +1544,7 @@ void loop()
          blinkstatus = 1;
          if(throttlesekunden > 250)
          {
-            tone(BUZZPIN,1000);
+            //tone(BUZZPIN,1000);
             
          }
          
@@ -1542,7 +1564,7 @@ void loop()
       else
       {
          blinkstatus = 0;
-         noTone(BUZZPIN);
+         //noTone(BUZZPIN);
       }
       if(curr_screen == 5)
       {
@@ -1550,6 +1572,7 @@ void loop()
          u8g2.sendBuffer();
       }
       updateHomeScreen();
+      //VPORTB.OUT |= (1 << 2);
       //OSZIA_HI();
       //digitalWrite(BUZZPIN,HIGH);
       //digitalWrite(OSZIA_PIN,HIGH);
@@ -2809,12 +2832,14 @@ void loop()
       
    }
    
-   //if(paketcounter > 10) // 20ms
+   //if(paketcounter > 2) // 20ms
    {
       paketcounter = 0;
       
       
       // pot lesen
+      //OSZIB_LO();
+      //digitalWrite(BUZZPIN,LOW);
       for (uint8_t i=0;i<NUM_SERVOS;i++)
       {
          if(PCB_BOARD == BOARD_2)
@@ -2895,9 +2920,12 @@ void loop()
             levelwertbyaw = levelwertarray[YAW];
          }
       } // for i
-      OSZIA_HI();
+      //OSZIB_HI();
+      //digitalWrite(BUZZPIN,HIGH);
+      //
       //PORTF.OUTSET = PIN5_bm;
-      //VPORTB.OUT ^= (1 << 2); 
+
+      
       data.yaw = Border_Mapvar255(YAW, potwertarray[YAW],potgrenzearray[YAW][1],servomittearray[YAW],potgrenzearray[YAW][0],false);
       
       /*
@@ -2973,6 +3001,7 @@ void loop()
       
       if(digitalRead(PPM_DIR_PIN) == 0) // Senden nur ohne Master-Stecker
       {
+         OSZIA_LO();
          if (radio.write(&data, sizeof(data)))
          {
             radiocounter++; 
@@ -3013,15 +3042,18 @@ void loop()
             {
                //Serial.println(F("Keine ACK-Daten erhalten"));
             }
+            
             // ********************
             // ********************
          }
          else
          {
             //Serial.println("radio error\n");
-            digitalWrite(BUZZPIN,!(digitalRead(BUZZPIN)));
+            //digitalWrite(BUZZPIN,!(digitalRead(BUZZPIN)));
             errcounter++;
          }
+         OSZIA_HI();
+         //digitalWrite(BUZZPIN,HIGH);
       }
    }
 }
