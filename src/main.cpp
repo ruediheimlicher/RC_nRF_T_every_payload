@@ -229,7 +229,7 @@ uint16_t eepromprelltimer = 0;
 uint16_t intdiff = 0;
 uint16_t intdiffpitch = 0;
 
-Bounce2::Button eepromtaste = Bounce2::Button();
+//Bounce2::Button eepromtaste = Bounce2::Button();
 
 
 #define ANZ_REP 8
@@ -1098,6 +1098,23 @@ void setCalib(void)
 {
    
 }
+ void OSZIA_HI(void)
+ {
+   //digitalWrite(OSZIA_PIN, HIGH);
+   VPORTB.OUT |= (1 << 2);
+  //digitalWrite(OSZIA_PIN, HIGH);
+ }
+ void OSZIA_LO(void)
+ {
+  //digitalWrite(OSZIA_PIN, LOW);
+  //digitalWrite(OSZIA_PIN, LOW);
+   VPORTB.OUT &= ~(1 << 2);
+ }
+ void OSZIA_TOG()
+ {
+  //  digitalWrite(OSZIA_PIN, !(digitalRead(OSZIA_PIN)));
+  VPORTB.OUT ^= (1 << 2);
+}
 
 
 
@@ -1169,15 +1186,16 @@ void setup()
    
    pinMode(BATT_PIN,INPUT);
    
-   
+   VPORTB.DIR |= (1 << 2);
+
    
    pinMode(TASTATUR_PIN,INPUT);
    
    
    //pinMode(EEPROMTASTE,INPUT_PULLUP);
-   eepromtaste.attach( EEPROMTASTE ,  INPUT_PULLUP ); 
-   eepromtaste.interval(5);
-   eepromtaste.setPressedState(LOW);
+   //eepromtaste.attach( EEPROMTASTE ,  INPUT_PULLUP ); 
+   //eepromtaste.interval(5);
+   //eepromtaste.setPressedState(LOW);
    
    
    //digitalWrite(EEPROMTASTE, HIGH);
@@ -1305,7 +1323,7 @@ void setup()
    
    setupPPM();
    
-   setupDebounce();
+   //setupDebounce();
    
    
    //Serial.print("\n"); 
