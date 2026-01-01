@@ -229,7 +229,7 @@ uint16_t eepromprelltimer = 0;
 uint16_t intdiff = 0;
 uint16_t intdiffpitch = 0;
 
-Bounce2::Button eepromtaste = Bounce2::Button();
+//Bounce2::Button eepromtaste = Bounce2::Button();
 
 
 #define ANZ_REP 8
@@ -1136,8 +1136,8 @@ void setup()
    
    //attachInterrupt(digitalPinToInterrupt(PPM_PIN), ppmISR, RISING);
    
-   pinMode(BUZZPIN,OUTPUT);
-   digitalWrite(BUZZPIN,LOW);
+   //pinMode(BUZZPIN,OUTPUT);
+   //digitalWrite(BUZZPIN,LOW);
    
    curr_steuerstatus = MODELL;
    //savestatus = 0xFF;
@@ -1163,7 +1163,7 @@ void setup()
    eepromread();
    
    
-   pinMode(BUZZPIN,OUTPUT);
+   //pinMode(BUZZPIN,OUTPUT);
    
    pinMode(LOOPLED,OUTPUT);
    
@@ -1175,9 +1175,9 @@ void setup()
    
    
    //pinMode(EEPROMTASTE,INPUT_PULLUP);
-   eepromtaste.attach( EEPROMTASTE ,  INPUT_PULLUP ); 
-   eepromtaste.interval(5);
-   eepromtaste.setPressedState(LOW);
+   //eepromtaste.attach( EEPROMTASTE ,  INPUT_PULLUP ); 
+   //eepromtaste.interval(5);
+   //eepromtaste.setPressedState(LOW);
    
    
    //digitalWrite(EEPROMTASTE, HIGH);
@@ -1210,10 +1210,7 @@ void setup()
    
    // ack
    //radio.enableAckPayload();
-   
-   
    radio.openWritingPipe(pipeOut);
-   
    
    radio.setChannel(124);
    //radio.setAutoAck(false);
@@ -1305,7 +1302,7 @@ void setup()
    
    setupPPM();
    
-   setupDebounce();
+   //setupDebounce();
    
    
    //Serial.print("\n"); 
