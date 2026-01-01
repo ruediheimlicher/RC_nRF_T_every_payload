@@ -47,6 +47,8 @@
 #define  FRAME_LENGTH   40000; // 20 ms
 #define  SYNC_PULSE     30;     // 300 µs
 
+
+
 #define arrow_width 16
 #define arrow_height 16
 

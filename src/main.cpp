@@ -96,6 +96,7 @@ uint16_t throttlesekunden = 0;
 
 #define MINDIFF 4
 
+#define OSZIA_PIN      5
 
 
 uint16_t schritt = 32;
@@ -1100,6 +1101,19 @@ void setCalib(void)
 }
 
 
+void OSZIA_HI(void)
+{
+   digitalWrite(OSZIA_PIN, HIGH);
+}
+void OSZIA_LO(void)
+{
+   digitalWrite(OSZIA_PIN, LOW);
+}
+void OSZIA_TOG()
+{
+   digitalWrite(OSZIA_PIN, !(digitalRead(OSZIA_PIN)));
+}
+
 
 void setup()
 {
@@ -1127,8 +1141,11 @@ void setup()
    
    analogReference(EXTERNAL);
    
-   //Serial.begin(9600);
+   Serial.begin(9600);
    
+   pinMode(OSZIA_PIN, OUTPUT);
+   
+
    // PPM decode
    pinMode(PPM_DIR_PIN, INPUT_PULLUP);
    pinMode(PPM_DATA_PIN, OUTPUT);
@@ -1493,7 +1510,10 @@ void loop()
    if (zeitintervall > 500) 
    { 
       zeitintervall = 0;
-      
+
+      OSZIA_LO();
+      //digitalWrite(OSZIA_PIN,LOW);
+      //digitalWrite(BUZZPIN,LOW);
       sekundencounter++;
       if (sekundencounter%2)
       {
@@ -1530,6 +1550,9 @@ void loop()
          u8g2.sendBuffer();
       }
       updateHomeScreen();
+      //OSZIA_HI();
+      //digitalWrite(BUZZPIN,HIGH);
+      //digitalWrite(OSZIA_PIN,HIGH);
    }   // zeitintervall > 500
    
    // Tastatur
@@ -2872,7 +2895,9 @@ void loop()
             levelwertbyaw = levelwertarray[YAW];
          }
       } // for i
-      
+      OSZIA_HI();
+      //PORTF.OUTSET = PIN5_bm;
+      //VPORTB.OUT ^= (1 << 2); 
       data.yaw = Border_Mapvar255(YAW, potwertarray[YAW],potgrenzearray[YAW][1],servomittearray[YAW],potgrenzearray[YAW][0],false);
       
       /*
