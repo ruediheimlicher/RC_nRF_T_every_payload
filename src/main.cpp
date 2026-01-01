@@ -382,7 +382,25 @@ void ResetData()
    data.aux2 = 0;
    
 }
-
+/*
+ void OSZIA_HI(void)
+ {
+   //digitalWrite(OSZIA_PIN, HIGH);
+   VPORTB.OUT |= (1 << 2);
+  //digitalWrite(OSZIA_PIN, HIGH);
+ }
+ void OSZIA_LO(void)
+ {
+  //digitalWrite(OSZIA_PIN, LOW);
+  //digitalWrite(OSZIA_PIN, LOW);
+   VPORTB.OUT &= ~(1 << 2);
+ }
+ void OSZIA_TOG()
+ {
+  //  digitalWrite(OSZIA_PIN, !(digitalRead(OSZIA_PIN)));
+  VPORTB.OUT ^= (1 << 2);
+}
+*/
 // ppm encode
 // Timer-ISR
 
@@ -1098,23 +1116,6 @@ void setCalib(void)
 {
    
 }
- void OSZIA_HI(void)
- {
-   //digitalWrite(OSZIA_PIN, HIGH);
-   VPORTB.OUT |= (1 << 2);
-  //digitalWrite(OSZIA_PIN, HIGH);
- }
- void OSZIA_LO(void)
- {
-  //digitalWrite(OSZIA_PIN, LOW);
-  //digitalWrite(OSZIA_PIN, LOW);
-   VPORTB.OUT &= ~(1 << 2);
- }
- void OSZIA_TOG()
- {
-  //  digitalWrite(OSZIA_PIN, !(digitalRead(OSZIA_PIN)));
-  VPORTB.OUT ^= (1 << 2);
-}
 
 
 
@@ -1153,11 +1154,16 @@ void setup()
    
    //attachInterrupt(digitalPinToInterrupt(PPM_PIN), ppmISR, RISING);
    
-   pinMode(BUZZPIN,OUTPUT);
-   digitalWrite(BUZZPIN,LOW);
+   //pinMode(BUZZPIN,OUTPUT);
+   //digitalWrite(BUZZPIN,LOW);
+
+   //VPORTB.DIR |= (1 << 2); // 
+
    
    curr_steuerstatus = MODELL;
-   //savestatus = 0xFF;
+   //savestatus = 0xFF;   
+   //VPORTB.DIR |= (1 << 2);
+
    
    delay(100);
    /*
@@ -1180,14 +1186,13 @@ void setup()
    eepromread();
    
    
-   pinMode(BUZZPIN,OUTPUT);
+   //pinMode(BUZZPIN,OUTPUT);
    
    pinMode(LOOPLED,OUTPUT);
    
    pinMode(BATT_PIN,INPUT);
    
-   VPORTB.DIR |= (1 << 2);
-
+   
    
    pinMode(TASTATUR_PIN,INPUT);
    
@@ -1520,7 +1525,7 @@ void loop()
          blinkstatus = 1;
          if(throttlesekunden > 250)
          {
-            tone(BUZZPIN,1000);
+            //tone(BUZZPIN,1000);
             
          }
          
@@ -1540,7 +1545,7 @@ void loop()
       else
       {
          blinkstatus = 0;
-         noTone(BUZZPIN);
+         //noTone(BUZZPIN);
       }
       if(curr_screen == 5)
       {
@@ -3012,7 +3017,7 @@ void loop()
          else
          {
             //Serial.println("radio error\n");
-            digitalWrite(BUZZPIN,!(digitalRead(BUZZPIN)));
+            //digitalWrite(BUZZPIN,!(digitalRead(BUZZPIN)));
             errcounter++;
          }
       }
