@@ -19,8 +19,8 @@
 
 #include "MS5611.h"
 
-//const uint64_t pipeOut = 0xABCDABCD71LL;         // NOTE: The address in the Transmitter and Receiver code must be the same "0xABCDABCD71LL" | Verici ve Alıcı kodundaki adres aynı olmalıdır
-const uint64_t pipeOut = 0xAAAAAAAA71LL;  
+const uint64_t pipeOut = 0xABCDABCD71LL;         // NOTE: The address in the Transmitter and Receiver code must be the same "0xABCDABCD71LL" | Verici ve Alıcı kodundaki adres aynı olmalıdır
+//const uint64_t pipeOut = 0xAAAAAAAA71LL;  
 extern "C" 
 
 
@@ -42,7 +42,7 @@ RF24 radio(CE_PIN, CSN_PIN);
 
 #define LOOPLED 4
 
-
+#define MS_PIN       5
 
 #define EEPROMTASTE  5
 
@@ -60,6 +60,8 @@ RF24 radio(CE_PIN, CSN_PIN);
 #define BLINKRATE 0xFF
 
 // defines for PINS
+
+
 // links
 #define PITCH_PIN     A3 // PSB2: A6
 #define YAW_PIN       A2 // PCB2: A3
@@ -1134,6 +1136,11 @@ void setup()
    pinMode(PPM_DIR_PIN, INPUT_PULLUP);
    pinMode(PPM_DATA_PIN, OUTPUT);
    digitalWrite(PPM_DATA_PIN,LOW);
+
+   pinMode(MS_PIN, OUTPUT);
+   digitalWrite(MS_PIN,HIGH);
+
+
    
    //attachInterrupt(digitalPinToInterrupt(PPM_PIN), ppmISR, RISING);
    
@@ -1498,6 +1505,7 @@ void loop()
       sekundencounter++;
       if (sekundencounter%2)
       {
+         //digitalWrite(MS_PIN,LOW);
          throttlecounter += (data.throttle);
          throttlesekunden = throttlecounter >> 8;
          blinkstatus = 1;
@@ -1522,6 +1530,7 @@ void loop()
       }
       else
       {
+         //digitalWrite(MS_PIN,HIGH);
          blinkstatus = 0;
          noTone(BUZZPIN);
       }
@@ -2947,8 +2956,9 @@ void loop()
       
       //if((PORTA.IN & PIN0_bm) == 0)  // Stecker nicht eingesteckt
       
-      //if(digitalRead(PPM_DIR_PIN) == 0) // Senden nur ohne Master-Stecker
+      if(digitalRead(PPM_DIR_PIN) == 0) // Senden nur ohne Master-Stecker
       {
+         digitalWrite(MS_PIN,HIGH);
          if (radio.write(&data, sizeof(data)))
          {
             radiocounter++; 
@@ -2999,5 +3009,9 @@ void loop()
             errcounter++;
          }
       }
+         else
+         {
+            digitalWrite(MS_PIN,LOW);
+         }
    }
 }
