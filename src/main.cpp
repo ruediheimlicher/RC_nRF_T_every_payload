@@ -19,8 +19,8 @@
 
 #include "MS5611.h"
 
-const uint64_t pipeOut = 0xABCDABCD71LL;         // NOTE: The address in the Transmitter and Receiver code must be the same "0xABCDABCD71LL" | Verici ve Alıcı kodundaki adres aynı olmalıdır
-
+//const uint64_t pipeOut = 0xABCDABCD71LL;         // NOTE: The address in the Transmitter and Receiver code must be the same "0xABCDABCD71LL" | Verici ve Alıcı kodundaki adres aynı olmalıdır
+const uint64_t pipeOut = 0xAAAAAAAA71LL;  
 extern "C" 
 
 
@@ -229,7 +229,7 @@ uint16_t eepromprelltimer = 0;
 uint16_t intdiff = 0;
 uint16_t intdiffpitch = 0;
 
-Bounce2::Button eepromtaste = Bounce2::Button();
+//Bounce2::Button eepromtaste = Bounce2::Button();
 
 
 #define ANZ_REP 8
@@ -366,7 +366,7 @@ uint16_t                impulsdelayarray[4] = {};
 //uint16_t                impulsCCMParray[4] = {};
 //uint16_t                restCCMParray[4] = {};
 //uint16_t                restCCM = 0;
-elapsedMillis  buzzintervall = 0;
+elapsedMillis        buzzintervall = 0;
 
 int Border_Mapvar255(uint8_t servo, int val, int lower, int middle, int upper, bool reverse);
 
@@ -498,7 +498,8 @@ ISR(TCA0_OVF_vect)
 }
 
 
-void setupPPM() {
+void setupPPM() 
+{
    
    // TCB0 konfigurieren
    TCB0.CTRLA = 0;  // stoppen
@@ -1140,6 +1141,7 @@ void setup()
    digitalWrite(BUZZPIN,LOW);
    
    curr_steuerstatus = MODELL;
+   
    //savestatus = 0xFF;
    
    delay(100);
@@ -1151,7 +1153,6 @@ void setup()
     //Serial.print(i);
     //Serial.print(" ee: *");
     //Serial.print(ee[i]);
-    
     }
     //Serial.print("\n");
     */
@@ -1175,9 +1176,9 @@ void setup()
    
    
    //pinMode(EEPROMTASTE,INPUT_PULLUP);
-   eepromtaste.attach( EEPROMTASTE ,  INPUT_PULLUP ); 
-   eepromtaste.interval(5);
-   eepromtaste.setPressedState(LOW);
+   //eepromtaste.attach( EEPROMTASTE ,  INPUT_PULLUP ); 
+   //eepromtaste.interval(5);
+   //eepromtaste.setPressedState(LOW);
    
    
    //digitalWrite(EEPROMTASTE, HIGH);
@@ -2669,8 +2670,8 @@ void loop()
       
       if(curr_screen == 0)
       {
-         updateHomeScreen();
-         u8g2.sendBuffer();
+         //updateHomeScreen();
+         //u8g2.sendBuffer();
       }
       
       if(loopcounter1 > 25)
@@ -2946,7 +2947,7 @@ void loop()
       
       //if((PORTA.IN & PIN0_bm) == 0)  // Stecker nicht eingesteckt
       
-      if(digitalRead(PPM_DIR_PIN) == 0) // Senden nur ohne Master-Stecker
+      //if(digitalRead(PPM_DIR_PIN) == 0) // Senden nur ohne Master-Stecker
       {
          if (radio.write(&data, sizeof(data)))
          {

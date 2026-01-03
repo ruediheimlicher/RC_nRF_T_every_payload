@@ -248,7 +248,7 @@ void oled_setBatterieWert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,float wert)
       u8g2.setDrawColor(1);
    */
       u8g2.setFontDirection(3);
-    u8g2.setFont(u8g2_font_t0_11_mr);  
+    u8g2.setFont(u8g2_font_t0_12_mr);  
 
       u8g2.setCursor(x,y);
       //u8g2.setDrawColor(0);
