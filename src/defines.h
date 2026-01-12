@@ -18,9 +18,11 @@
 #define ANZEIGE_TAST    0
 #define ANZEIGE_CALIB   2
 #define ANZEIGE_ADC     3
-#define ANZEIGE_SLAVE   5
+#define ANZEIGE_SLAVE   4
+#define ANZEIGE_EEPROM  5
 
-#define ANZEIGE_DATA 7
+#define ANZEIGE_LEVEL   6
+#define ANZEIGE_DATA    7
 
 #define HOMESCREEN      0
 #define MODELLSCREEN    1 // SYMPEL, TROTTLE ...

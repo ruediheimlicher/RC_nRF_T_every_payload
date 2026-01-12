@@ -241,20 +241,14 @@ void oled_flyerbatteriebalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,
 
 void oled_setBatterieWert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,float wert)
 {
-   /*
-      u8g2.setCursor(x,y);
-      u8g2.setDrawColor(0);
-      u8g2.print(wert,1);
-      u8g2.setDrawColor(1);
-   */
-      u8g2.setFontDirection(3);
-    u8g2.setFont(u8g2_font_t0_12_mr);  
+   u8g2.setFontDirection(3);
+   u8g2.setFont(u8g2_font_t0_12_mr);  
 
-      u8g2.setCursor(x,y);
+   u8g2.setCursor(x,y);
       //u8g2.setDrawColor(0);
-      u8g2.print(wert,1);
-      u8g2.setDrawColor(1);
-      u8g2.setFontDirection(0);
+   u8g2.print(wert,1);
+   u8g2.setDrawColor(1);
+   u8g2.setFontDirection(0);
 
       
 }
@@ -320,7 +314,7 @@ void setHomeScreen()
 
 void updateHomeScreen()
 {
- 
+ u8g2.setFont(u8g2_font_t0_15_mr);  
 
    if(savestatus == CHANGED)
    {
@@ -329,7 +323,7 @@ void updateHomeScreen()
       u8g2.drawStr(4,62,"SAVE?");
       //u8g2.setFontMode(0);
       //u8g2.setDrawColor(0);
-      u8g2.drawStr(46,48 + charh,"Y" );
+      u8g2.drawStr(48,48 + charh,"Y" );
       
       //u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
@@ -339,7 +333,7 @@ void updateHomeScreen()
       {
          u8g2.drawFrame(45,48,16,16);
          u8g2.setDrawColor(0);
-         u8g2.drawFrame(62,48,16,16);
+         u8g2.drawFrame(62,48,40,16);
          u8g2.setDrawColor(1);
       }
       else
@@ -360,30 +354,22 @@ void updateHomeScreen()
 
    
    }
-   else if (savestatus == CANCEL)
+   else 
    {
-      
-      u8g2.setDrawColor(0);
-      u8g2.drawBox(4,46,120,18);
-      u8g2.setDrawColor(1);
-      //u8g2.sendBuffer();
-      savestatus = 1;
-   }
+      if (savestatus == CANCEL)
+      {
+         
+         u8g2.setDrawColor(0);
+         u8g2.drawBox(4,46,120,18);
+         u8g2.setDrawColor(1);
+         //u8g2.sendBuffer();
+         savestatus = 1;
+      }
 
       char buf0[4];
 
+      
       /*
-      //u8g2.setCursor(0,18);
-      //u8g2.print(data.yaw);
-      sprintf(buf0, "%3d", potwertarray[0]);
-      u8g2.drawStr(0,18,buf0);
-       sprintf(buf0, "%3d", potgrenzearray[PITCH][0]);
-      u8g2.drawStr(30,18,buf0);
-       sprintf(buf0, "%3d", potgrenzearray[PITCH][1]);
-      u8g2.drawStr(60,18,buf0);
-      //u8g2.print(potwertarray[0]);
-      */
-/*
       // Yaw
       //u8g2.setCursor(4,30);
       //u8g2.print(data.yaw);
@@ -409,7 +395,7 @@ void updateHomeScreen()
       
       sprintf(buf0, "%3d", data.throttle);
       u8g2.drawStr(30,48,buf0);
-*/
+      */
 
       //sprintf(buf0, "%3d", ackData[0]); // temp
       sprintf(buf0, "%3d", temperaturint/10);
@@ -448,7 +434,7 @@ void updateHomeScreen()
 
       u8g2.setFont(u8g2_font_t0_15_mr); 
       
-
+   }
 
      // uint8_t p = curr_model;
 
@@ -482,7 +468,7 @@ void setMenuScreen()
    //blink_cursorpos=0xFFFF;
    charh = u8g2.getMaxCharHeight()-1;
 
-   char_x = 24;
+   char_x = 16;
    char_y = 45;
    u8g2.setDrawColor(1);
    u8g2.setFontDirection(3);
@@ -517,7 +503,7 @@ void updateMenuScreen() // Liste der Modelle
    char_y = 2;
    uint8_t i = 0;
    charh = u8g2.getMaxCharHeight()-1;
-   char_x = 36;
+   char_x = 28;
    while (char_y < 64)
    {
       if(i==curr_model)
@@ -620,7 +606,7 @@ void updateFunktionScreen()
    //u8g2.setFont(u8g2_font_t0_14_mr);  
    u8g2.setFont(u8g2_font_t0_15_mr);  
    charh = u8g2.getMaxCharHeight()-1;
-   char_x = 26;
+   char_x = 28;
 
    uint8_t feldx = 110;
    uint8_t feldyO = 6;
@@ -959,6 +945,7 @@ void refreshScreen(void)
       case 0:
       {
          char buf[6];
+          u8g2.setFont(u8g2_font_t0_15_mr);
          if(stopsekunde < 10)
          {
             sprintf(buf, "%2d:0%1d",stopminute,stopsekunde);
@@ -986,7 +973,7 @@ void refreshScreen(void)
 
          u8g2.sendBuffer();
 
-      }
+      }break;
       case 3: //FUNKTIONSCREEN
       {
 

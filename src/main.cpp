@@ -118,8 +118,8 @@ uint8_t                    kanalsettingarray[ANZAHLMODELLE][NUM_SERVOS][KANALSET
 uint16_t                   servomittearray[NUM_SERVOS] = {}; // Werte fuer Mitte
 
 uint8_t levelwert= 0;
-//uint8_t levelwerta = 0;
-//uint8_t levelwertb = 0;
+uint8_t levelwerta = 0;
+uint8_t levelwertb = 0;
 
 uint8_t levelwertarray[NUM_SERVOS] = {}; // leelwert pro servo
 
@@ -131,8 +131,8 @@ uint16_t potwertyaw = 0;
 
 
 uint8_t expowert = 0;
-//uint8_t expowerta = 0;
-//uint8_t expowertb = 0;
+uint8_t expowerta = 0;
+uint8_t expowertb = 0;
 
 uint8_t expowertarray[NUM_SERVOS] = {}; // expowert pro Servo
 
@@ -1166,10 +1166,10 @@ void setup()
    //Serial.println(__DATE__);
    //Serial.println(__TIME__);
    
-   printeeprom(160);
-   
+   printeeprom(240);
+   _delay_ms(100);
    eepromread();
-   
+   _delay_ms(100);
    
    pinMode(BUZZPIN,OUTPUT);
    
@@ -1202,13 +1202,13 @@ void setup()
    // 0.96"
    
    initDisplay();
+   _delay_ms(100);
    
-   
-   oled_vertikalbalken(BATTX,BATTY,BATTB,BATTH);
+   //oled_vertikalbalken(BATTX,BATTY,BATTB,BATTH);
    
    
    setHomeScreen();
-   
+   _delay_ms(100);
    
    //u8g2.sendBuffer(); 
    
@@ -1268,7 +1268,7 @@ void setup()
    {
       uint16_t wert = 500 + i * 50;
       wert = 750;
-      impulstimearray[i] = wert; // mittelwert
+      //impulstimearray[i] = wert; // mittelwert
       
       //potgrenzearray[i][0] = potlo;
       //potgrenzearray[i][1] = pothi;
@@ -1357,8 +1357,6 @@ int Throttle_Map255(int val, int fromlow, int fromhigh,int tolow, int tohigh, bo
    levelint = expoint * (8-levelwerta);
    levelint /= 4;
    
-   
-   
    return ( reverse ? 255 - levelint : levelint );
 }
 
@@ -1399,11 +1397,6 @@ int Border_Mapvar255(uint8_t servo, int val, int lower, int middle, int upper, b
    
    uint8_t expowerta = expowertarray[servo] & 0x07;
    uint8_t expowertb = (expowertarray[servo] & 0x70)>>4;
-   
-   //levelwerta = 0;
-   //levelwertb = 0;
-   //expowerta = 0;
-   //expowertb = 0;
    
    if ( val < middle )
    {
@@ -1539,7 +1532,11 @@ void loop()
          updateModusScreen();
          u8g2.sendBuffer();
       }
-      updateHomeScreen();
+      if(curr_screen == 0)
+      {
+         updateHomeScreen();
+      }
+      
    }   // zeitintervall > 500
    
    // Tastatur
@@ -1604,7 +1601,7 @@ void loop()
                         updateMenuScreen();
                         u8g2.sendBuffer();
                      }
-                  }
+                  }break;
                   case 2: //T2 MODELLSCREEN
                   {
                      if(curr_funktion)
@@ -1641,9 +1638,9 @@ void loop()
                      {
                         case 0:
                         {
-                           if(curr_wert )
+                           if(curr_wert)
                            {
-                              curr_wert--;                              
+                              curr_wert--;
                            }
                            
                         }break;
@@ -1693,7 +1690,7 @@ void loop()
                                        if(expoO < 4)
                                        {
                                           expoO++;
-                                          savestatus = CHANGED;;
+                                          savestatus = CHANGED;
                                        }
                                     }break;
                                     case 1: // DOWN
@@ -1758,7 +1755,7 @@ void loop()
                {
                   // EEPROM lesen
                   eepromread();
-                  printeeprom(160);
+                  printeeprom(240);
                }break;
                   
             } // switch curr_screen
@@ -1922,10 +1919,10 @@ void loop()
                               calibstatus &= ~(1<<CALIB_START);// calib beenden
                               
                               Serial.println(" vor write: ");  
-                              printeeprom(160);
+                              printeeprom(240);
                               eepromwrite();
                               Serial.println(" nach write: "); 
-                              printeeprom(160);                           
+                              printeeprom(240);                           
                            }
                            
                            
@@ -2311,10 +2308,10 @@ void loop()
                      {
                         // write to eeprom
                         Serial.println(" vor write: ");  
-                        printeeprom(160);
+                        printeeprom(240);
                         eepromwrite();
                         Serial.println(" nach write: "); 
-                        printeeprom(160);
+                        printeeprom(240);
                         savestatus = CANCEL;
                      }break;
                         
@@ -2333,7 +2330,7 @@ void loop()
                }break;
                   
             }// switch curr_screen
-            updateHomeScreen();
+            //updateHomeScreen();
             u8g2.sendBuffer();
          }break;
       }//switch (Taste)
@@ -2821,18 +2818,20 @@ void loop()
             if(potwert >= potgrenzearray[i][0])
             {
                potgrenzearray[i][0] = potwert; // pothi
-
+               savestatus = CHANGED;
             }
             if(potwert < potgrenzearray[i][1])
             {
                potgrenzearray[i][1] = potwert; // potlo
+               savestatus = CHANGED;
             }
          }
          //potgrenzearray[0][0] = 17;
          //potgrenzearray[0][1] = 33;
          
          uint16_t mitte = servomittearray[i];
-         uint8_t levelwert = kanalsettingarray[curr_model][i][1]; // element 1, levelarray
+         //uint8_t levelwert = kanalsettingarray[curr_model][i][1]; // element 1, levelarray
+
          levelwertarray[i] = kanalsettingarray[curr_model][i][1]; 
          // levelwert   faktor
          //    0             8/8
@@ -2843,14 +2842,14 @@ void loop()
          
          // eventuell ungleiche werte 
          
-         //levelwerta = levelwert & 0x07;
-         //levelwertb = (levelwert & 0x70)>>4;
+         levelwerta = levelwert & 0x07;
+         levelwertb = (levelwert & 0x70)>>4;
          
          // expowert ev. ungleich fuer richtung
          expowert = kanalsettingarray[curr_model][i][2]; // element2, expoarray
          expowertarray[i] = kanalsettingarray[curr_model][i][2];
-         //expowerta = expowert & 0x07;
-         //expowertb = (expowert & 0x70)>>4;
+         expowerta = expowert & 0x07;
+         expowertb = (expowert & 0x70)>>4;
          
          
          
