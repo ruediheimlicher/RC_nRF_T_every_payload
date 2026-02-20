@@ -236,6 +236,8 @@ uint16_t intdiffpitch = 0;
 
 #define ANZ_REP 8
 uint16_t tastaturwert = 0;
+uint16_t lasttastaturwert = 0;
+
 uint16_t tastaturwertarray[ANZ_REP] = {};
 uint8_t mittelposition = 0;
 
@@ -289,7 +291,7 @@ volatile uint16_t restTime = FRAME_LENGTH;
 
 
 
-
+uint8_t debounceTaste(void);
 
 
 
@@ -361,7 +363,7 @@ elapsedMillis           sinceLastBlink = 0;
 
 elapsedMillis           paketcounter;
 elapsedMillis           sincelasttastatur;
-
+elapsedMillis           sincelasttastenfunktion;
 
 uint16_t                impulsdelayarray[4] = {};
 //uint16_t                restzeitarray[4] = {};
@@ -455,21 +457,7 @@ ISR(TCB0_INT_vect)
 }
 
 
-uint8_t debounceTaste()
-{
-   static  uint8_t debounced_state = 0;
-   static uint16_t state = 0;
-   state = (state<<1) | (tastaturwert>10) ;
-   if(state >= 0xF00)
-   {
-      //debouncecheck = 1;
-      return 1;
-      
-   }
-   
-   //debouncecheck = 0;
-   return 2;
-}
+
 
 
 void setupDebounce()
@@ -969,7 +957,9 @@ void tastenfunktion(uint16_t Tastenwert)
       
       
       if (tastaturcounter>=400)   //   Prellen
+      //((if(sincelasttastenfunktion > 10)
       {        
+         sincelasttastenfunktion = 0;
          if(ANZEIGE_TAST)
          {
             //Serial.print(Tastenwert);
@@ -1470,7 +1460,38 @@ double mapd(double x, double in_min, double in_max, double out_min, double out_m
 
 uint16_t testwert=0;
 
+float lerp(float a, float b, float t) 
+{
+    return a + t * (b - a);
+}
+float lerpfaktor = 0.2;
+uint8_t rawKeyPressed(void)
+{
+   if(abs(tastaturwert - lasttastaturwert) < 10) // ON
+   {
+      return 0;
+   }
+   
+   else
+   {
+      return 1;
+   }
+}
 
+uint8_t debounceTaste(void)
+{
+   static uint16_t state = 0;
+   //state = ((state << 1) | rawKeyPressed() | 0xE000) ;
+   state= ((state<<1) | !rawKeyPressed() | 0xE000) & 0xFFFF; // Begrenzung der Bitschieberei
+   if (state >= 0xF00)
+   {
+      // debouncecheck = 1;
+      return 1;
+   }
+   
+   // debouncecheck = 0;
+   return 0;
+}
 
 void loop()
 {                
@@ -1483,7 +1504,16 @@ void loop()
    if(sincelasttastatur > 4)
    {
       sincelasttastatur = 0;
-      tastaturwert = analogRead(TASTATUR_PIN)/2;
+      uint16_t tastaturwert_raw = analogRead(TASTATUR_PIN)/2;
+     
+      tastaturwert = tastaturwert_raw;
+      if(debounceTaste())
+      {
+         //Serial.print("Tastaturwert: ");
+         //Serial.print(tastaturwert);
+         tastenfunktion(tastaturwert);
+      }
+
       tastenfunktion(tastaturwert);
       
    }
@@ -1491,7 +1521,7 @@ void loop()
    
    
    
-   if (zeitintervall > 500) 
+   if (zeitintervall > 400) 
    { 
       zeitintervall = 0;
       
@@ -2327,6 +2357,7 @@ void loop()
                         
                         //u8g2.sendBuffer();
                   }   
+                  updateHomeScreen();
                }break;
                   
             }// switch curr_screen
@@ -2928,8 +2959,8 @@ void loop()
       // if(curr_model == 0)
       if(!(calibstatus &(1<<CALIB_START) )  ) // bei calib soll roll ausgegeben werden
       {
-         potgrenzearray[ROLL][0] = servomittearray[ROLL];
-         potgrenzearray[ROLL][1] = servomittearray[ROLL];
+      //   potgrenzearray[ROLL][0] = servomittearray[ROLL];
+      //   potgrenzearray[ROLL][1] = servomittearray[ROLL];
       }
       
       data.roll = Border_Mapvar255(ROLL,potwertarray[ROLL],potgrenzearray[ROLL][1],servomittearray[ROLL],potgrenzearray[ROLL][0],false);
