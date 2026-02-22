@@ -468,7 +468,7 @@ uint8_t debounceTaste()
    }
    
    //debouncecheck = 0;
-   return 2;
+   return 0;
 }
 
 
@@ -968,7 +968,7 @@ void tastenfunktion(uint16_t Tastenwert)
    {      
       
       
-      if (tastaturcounter>=400)   //   Prellen
+      if (tastaturcounter>=20)   //   Prellen
       {        
          if(ANZEIGE_TAST)
          {
@@ -1480,11 +1480,15 @@ void loop()
    //tastaturwert = analogRead(TASTATUR_PIN)/2;
    //tastaturwert = readTastatur(TASTATUR_PIN);
    //tastaturwert = readTastatur(TASTATUR_PIN)/2;
-   if(sincelasttastatur > 4)
+   if(sincelasttastatur > 30)
    {
       sincelasttastatur = 0;
       tastaturwert = analogRead(TASTATUR_PIN)/2;
-      tastenfunktion(tastaturwert);
+      if(debounceTaste)
+      {
+          tastenfunktion(tastaturwert);
+      }
+     
       
    }
    
@@ -1849,7 +1853,7 @@ void loop()
                      taste5counter++;
                      //Serial.print("taste5counter: ");
                      //Serial.println(taste5counter);
-                     tastaturcounter = 300; // Mehrfachklick ermoeglichen
+                     //tastaturcounter = 300; // Mehrfachklick ermoeglichen
                      if (taste5counter == 3)
                      {
                         curr_screen = 1;
@@ -2927,13 +2931,26 @@ void loop()
       //Serial.println(data.yaw);
       // if(curr_model == 0)
       if(!(calibstatus &(1<<CALIB_START) )  ) // bei calib soll roll ausgegeben werden
+      if(curr_model == 0)
       {
-         potgrenzearray[ROLL][0] = servomittearray[ROLL];
-         potgrenzearray[ROLL][1] = servomittearray[ROLL];
+      //   potgrenzearray[ROLL][0] = servomittearray[ROLL];
+      //   potgrenzearray[ROLL][1] = servomittearray[ROLL];
       }
       
-      data.roll = Border_Mapvar255(ROLL,potwertarray[ROLL],potgrenzearray[ROLL][1],servomittearray[ROLL],potgrenzearray[ROLL][0],false);
+      //data.roll = Border_Mapvar255(ROLL,potwertarray[ROLL],potgrenzearray[ROLL][1],servomittearray[ROLL],potgrenzearray[ROLL][0],false);
       
+      // teensy
+
+      if(curr_model > 0)
+         {
+            data.roll = Border_Mapvar255(ROLL, potwertarray[ROLL], potgrenzearray[ROLL][1], servomittearray[ROLL], potgrenzearray[ROLL][0], false);
+         }
+         else
+         {
+            data.roll =  127;
+         }
+      // tensy
+
       
       //uint16_t throttlemitte = servomittearray[THROTTLE];
       //data.throttle = Throttle_Map(potwertarray[THROTTLE],throttlemitte, POTHI,0,255, false );   
