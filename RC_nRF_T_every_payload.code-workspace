@@ -3,6 +3,10 @@
 		{
 			"name": "RC_nRF_T_every_payload",
 			"path": "."
+		},
+		{
+			"name": "RC_nRF_Teensy_payload",
+			"path": "../RC_nRF_Teensy_payload"
 		}
 	],
 	"settings": {}

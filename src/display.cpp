@@ -121,9 +121,9 @@ uint8_t charh = 0;
 uint8_t balkenh = 50;
 uint8_t balkenb = 5;
 uint8_t balkenvh = 40;
- uint8_t balkenvb = 5;
- uint8_t balkenhh = 3;
- uint8_t balkenhb = 40;
+uint8_t balkenvb = 5;
+uint8_t balkenhh = 3;
+uint8_t balkenhb = 40;
 
 //char menubuffer[20];
 //char titelbuffer[20];
@@ -133,29 +133,29 @@ U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/U8X8_PIN_NONE);
 
 void initDisplay()
 {
-  u8g2.begin();
-  uint8_t c = 0;
+   u8g2.begin();
+   uint8_t c = 0;
 }
 
 /*
  void oled_fill(uint8_t x,uint8_t y,uint8_t l)
-{
-   //u8g2.setDrawColor(0);
-   u8g2.drawBox(x,y-charh,l,charh+4);
-   //u8g2.setDrawColor(1);
-   u8g2.sendBuffer();
-}
-
-
-
-void oled_setInt(uint8_t x,uint8_t y, uint16_t data)
-{
-   u8g2.setCursor(x,y);
-   u8g2.print(data);
-   u8g2.sendBuffer();
-
-}
-*/
+ {
+ //u8g2.setDrawColor(0);
+ u8g2.drawBox(x,y-charh,l,charh+4);
+ //u8g2.setDrawColor(1);
+ u8g2.sendBuffer();
+ }
+ 
+ 
+ 
+ void oled_setInt(uint8_t x,uint8_t y, uint16_t data)
+ {
+ u8g2.setCursor(x,y);
+ u8g2.print(data);
+ u8g2.sendBuffer();
+ 
+ }
+ */
 void oled_delete(uint8_t x,uint8_t y,uint8_t l)
 {
    u8g2.setDrawColor(0);
@@ -174,68 +174,68 @@ void oled_frame(uint8_t x,uint8_t y,uint8_t l)
 void oled_vertikalbalken(uint8_t x,uint8_t y, uint8_t b, uint8_t h)
 {
    u8g2.drawFrame(x,y,b,h);
-
-
+   
+   
 }
 
 void oled_vertikalbalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint8_t wert)
 {
-  ////Serial.print(h);
-  ////Serial.print("\t");
-  ////Serial.print(wert);
-  
-  ////Serial.print("\n");
-  uint8_t anzeige = map(wert-30,0,12,0,h); 
-  
-  u8g2.setDrawColor(0);
-  u8g2.drawBox(x+1,y+1,b-2,h-2);
-  u8g2.setDrawColor(1);
-  //u8g2.drawBox(x+7,y+1,b-2,h-2);
-  u8g2.drawHLine(x,y+h-wert,b);
-  u8g2.drawHLine(x,y+h-wert-1,b);
-  u8g2.drawHLine(x,y+h-wert+1,b);
-
+   ////Serial.print(h);
+   ////Serial.print("\t");
+   ////Serial.print(wert);
+   
+   ////Serial.print("\n");
+   uint8_t anzeige = map(wert-30,0,12,0,h); 
+   
+   u8g2.setDrawColor(0);
+   u8g2.drawBox(x+1,y+1,b-2,h-2);
+   u8g2.setDrawColor(1);
+   //u8g2.drawBox(x+7,y+1,b-2,h-2);
+   u8g2.drawHLine(x,y+h-wert,b);
+   u8g2.drawHLine(x,y+h-wert-1,b);
+   u8g2.drawHLine(x,y+h-wert+1,b);
+   
 }
 
 void oled_batteriebalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint16_t wert)
 {
- //uint8_t anzeige = map(wert-30,0,12,0,h); // Bereich 3-4.2V, 1.2V
+   //uint8_t anzeige = map(wert-30,0,12,0,h); // Bereich 3-4.2V, 1.2V
    uint8_t min = map(2,0,12,0,h);
-  uint8_t anzeige = wert;
-
-  u8g2.setDrawColor(0);
-  u8g2.drawBox(x+1,y+1,b-2,h-2);
-  u8g2.setDrawColor(1);
- 
-  u8g2.drawBox(x+1,y+h-anzeige,b-2,anzeige);
-  u8g2.setDrawColor(0);
-  u8g2.drawHLine(x+1,y+h-min,b-2);
-  u8g2.drawHLine(x+1,y+h-min-1,b-2);
-  u8g2.setDrawColor(1);
-
+   uint8_t anzeige = wert;
    
-
+   u8g2.setDrawColor(0);
+   u8g2.drawBox(x+1,y+1,b-2,h-2);
+   u8g2.setDrawColor(1);
+   
+   u8g2.drawBox(x+1,y+h-anzeige,b-2,anzeige);
+   u8g2.setDrawColor(0);
+   u8g2.drawHLine(x+1,y+h-min,b-2);
+   u8g2.drawHLine(x+1,y+h-min-1,b-2);
+   u8g2.setDrawColor(1);
+   
+   
+   
 }
 
 void oled_flyerbatteriebalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint16_t wert)
 {
- uint8_t anzeige = map(wert-30,0,12,0,h); // Bereich 3-7.4V, 1.2V BATT 8.4V: 240   6.4V: 94   6.0: 65
- uint8_t min = map(2,0,12,0,h);
-  anzeige = wert;
-
-  u8g2.setDrawColor(0);
-  u8g2.drawBox(x+1,y+1,b-2,h-2);
-  u8g2.setDrawColor(1);
- 
-  u8g2.drawBox(x+1,y+h-anzeige,b-2,anzeige);
-  u8g2.setDrawColor(0);
-  u8g2.drawHLine(x+1,y+h-min,b-2);
-  u8g2.drawHLine(x+1,y+h-min-1,b-2);
-  u8g2.setDrawColor(1);
-
+   uint8_t anzeige = map(wert-30,0,12,0,h); // Bereich 3-7.4V, 1.2V BATT 8.4V: 240   6.4V: 94   6.0: 65
+   uint8_t min = map(2,0,12,0,h);
+   anzeige = wert;
+   
+   u8g2.setDrawColor(0);
+   u8g2.drawBox(x+1,y+1,b-2,h-2);
+   u8g2.setDrawColor(1);
+   
+   u8g2.drawBox(x+1,y+h-anzeige,b-2,anzeige);
+   u8g2.setDrawColor(0);
+   u8g2.drawHLine(x+1,y+h-min,b-2);
+   u8g2.drawHLine(x+1,y+h-min-1,b-2);
+   u8g2.setDrawColor(1);
+   
    // Batt
    
-
+   
 }
 
 
@@ -243,14 +243,14 @@ void oled_setBatterieWert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,float wert)
 {
    u8g2.setFontDirection(3);
    u8g2.setFont(u8g2_font_t0_12_mr);  
-
+   
    u8g2.setCursor(x,y);
-      //u8g2.setDrawColor(0);
+   //u8g2.setDrawColor(0);
    u8g2.print(wert,1);
    u8g2.setDrawColor(1);
    u8g2.setFontDirection(0);
-
-      
+   
+   
 }
 
 void oled_horizontalbalken(uint8_t x,uint8_t y, uint8_t b, uint8_t h)
@@ -259,25 +259,25 @@ void oled_horizontalbalken(uint8_t x,uint8_t y, uint8_t b, uint8_t h)
 }
 void oled_horizontalbalken_setwert(uint8_t x,uint8_t y, uint8_t b, uint8_t h,uint8_t wert)
 {
-  ////Serial.print(b);
-  ////Serial.print("\t");
-  ////Serial.print(wert);
-  
-  ////Serial.print("\n");
-  
-
-  u8g2.setDrawColor(0);
-  u8g2.drawBox(x+1,y+1,b-2,h-2);
-
- 
-
-  u8g2.setDrawColor(1);
-  //u8g2.drawBox(x+7,y+1,b-2,h-2);
-  //return;
-  u8g2.drawVLine(x+b-wert,y,h);
-  //u8g2.drawHLine(x+b-wert-1,y,h);
-  //u8g2.drawHLine(x+b-wert+1,y,h);
-
+   ////Serial.print(b);
+   ////Serial.print("\t");
+   ////Serial.print(wert);
+   
+   ////Serial.print("\n");
+   
+   
+   u8g2.setDrawColor(0);
+   u8g2.drawBox(x+1,y+1,b-2,h-2);
+   
+   
+   
+   u8g2.setDrawColor(1);
+   //u8g2.drawBox(x+7,y+1,b-2,h-2);
+   //return;
+   u8g2.drawVLine(x+b-wert,y,h);
+   //u8g2.drawHLine(x+b-wert-1,y,h);
+   //u8g2.drawHLine(x+b-wert+1,y,h);
+   
 }
 
 void resetRegister(void)
@@ -304,18 +304,18 @@ void setHomeScreen()
    u8g2.setFont(u8g2_font_t0_15_mr);  
    oled_vertikalbalken(BATTX,BATTY,BATTB,BATTH);
    oled_vertikalbalken(FLYBATTX,FLYBATTY,FLYBATTB,FLYBATTH);
-
+   
    u8g2.sendBuffer();
    curr_cursorspalte = 0;
    curr_cursorzeile = 0;
-    updateHomeScreen();
-
+   updateHomeScreen();
+   
 }
 
 void updateHomeScreen()
 {
- u8g2.setFont(u8g2_font_t0_15_mr);  
-
+   u8g2.setFont(u8g2_font_t0_15_mr);  
+   
    if(savestatus == CHANGED)
    {
       charh = u8g2.getMaxCharHeight()-1;
@@ -328,7 +328,7 @@ void updateHomeScreen()
       //u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       u8g2.drawStr(66,48 + charh,"N");
-
+      
       if(curr_cursorspalte ==0)
       {
          u8g2.drawFrame(45,48,16,16);
@@ -345,14 +345,14 @@ void updateHomeScreen()
          u8g2.drawFrame(45,48,40,16);
          u8g2.setDrawColor(1);
       }
-
+      
       //savestatus = 0xFF;
       
-       
-
+      
+      
       //u8g2.sendBuffer();
-
-   
+      
+      
    }
    else 
    {
@@ -365,99 +365,99 @@ void updateHomeScreen()
          //u8g2.sendBuffer();
          savestatus = 1;
       }
-
+      
       char buf0[4];
-
+      
       
       /*
-      // Yaw
-      //u8g2.setCursor(4,30);
-      //u8g2.print(data.yaw);
-      sprintf(buf0, "%3d", data.yaw);
-      u8g2.drawStr(TAB0,36,buf0);
+       // Yaw
+       //u8g2.setCursor(4,30);
+       //u8g2.print(data.yaw);
+       sprintf(buf0, "%3d", data.yaw);
+       u8g2.drawStr(TAB0,36,buf0);
+       
+       // Pitch
+       // u8g2.setCursor(36,30);
+       // u8g2.print(data.pitch);
+       sprintf(buf0, "%3d", data.pitch);
+       u8g2.drawStr(30,36,buf0);
+       
+       // Roll
+       //u8g2.setCursor(4,46);
+       //u8g2.print(data.roll);
+       sprintf(buf0, "%3d", data.roll);
+       u8g2.drawStr(TAB0,48,buf0);
+       
+       // Throttle
+       //u8g2.setCursor(36,46);
+       //u8g2.print(data.throttle);
+       
+       
+       sprintf(buf0, "%3d", data.throttle);
+       u8g2.drawStr(30,48,buf0);
+       */
       
-      // Pitch
-     // u8g2.setCursor(36,30);
-     // u8g2.print(data.pitch);
-      sprintf(buf0, "%3d", data.pitch);
-      u8g2.drawStr(30,36,buf0);
-
-      // Roll
-      //u8g2.setCursor(4,46);
-      //u8g2.print(data.roll);
-      sprintf(buf0, "%3d", data.roll);
-      u8g2.drawStr(TAB0,48,buf0);
-      
-      // Throttle
-      //u8g2.setCursor(36,46);
-      //u8g2.print(data.throttle);
-
-      
-      sprintf(buf0, "%3d", data.throttle);
-      u8g2.drawStr(30,48,buf0);
-      */
-
       //sprintf(buf0, "%3d", ackData[0]); // temp
       sprintf(buf0, "%3d", temperaturint/10);
       u8g2.drawStr(TAB0,64,buf0);
-     
-     // sprintf(buf0, "%3d", ackData[1]); // Pitch
+      
+      // sprintf(buf0, "%3d", ackData[1]); // Pitch
       //u8g2.drawStr(TAB0+28,64,buf0);
-
+      
       //sprintf(buf0, "%3d", ackData[2]); // alt
       //u8g2.drawStr(TAB0+56,64,buf0);
-
+      
       // sprintf(buf0, "%3d", ackData[3]); // Batt
       //u8g2.drawStr(TAB0+84,64,buf0);
       
-
-     char buf1[5];
+      
+      char buf1[5];
       //sprintf(buf1, "%3d", pressureint);
       //u8g2.drawStr(TAB0+28,64,buf1);
-
+      
       sprintf(buf1, "%3d", altitudeint); // alt
-    
+      
       u8g2.drawStr(TAB0+34,64,buf1);
-
+      
       sprintf(buf1, "%3d", startaltitudeint); // alt
-       u8g2.drawStr(TAB0+64,64,buf1);
-
+      u8g2.drawStr(TAB0+64,64,buf1);
+      
       u8g2.setDrawColor(0);
       u8g2.drawBox(TAB0,22 ,46,26);
       u8g2.setDrawColor(1);
       sprintf(buf1, "%3d", diffaltitudeint); // diffalt
-
+      
       u8g2.setFont(u8g2_font_t0_22_mr); 
       
       //u8g2.setFont(u8g2_font_logisoso22_tf);  
       u8g2.drawStr(TAB0,46,buf1);
-
+      
       u8g2.setFont(u8g2_font_t0_15_mr); 
       
    }
-
-     // uint8_t p = curr_model;
-
-
+   
+   // uint8_t p = curr_model;
+   
+   
    oled_batteriebalken_setwert(BATTX,BATTY+8,BATTB,BATTH+1,batterieanzeige);
-
+   
    oled_setBatterieWert(BATTX+8,BATTY+BATTH+18,BATTB+18,14,UBatt);
    
    //u8g2.setFont(u8g2_font_t0_14_mr);  
    
    //oled_setBatterieWert(BATTX,BATTY+BATTH+16,BATTB,26,UBatt);
-
+   
    u8g2.setFont(u8g2_font_t0_15_mr);  
-
+ 
    oled_flyerbatteriebalken_setwert(FLYBATTX,FLYBATTY,FLYBATTB,FLYBATTH,flyerbatterieanzeige);
-
+   
    oled_setBatterieWert(FLYBATTX+8,FLYBATTY+FLYBATTH+18,FLYBATTB+18,14,UFlyerBatt);
-
+   
    
    //
    //uint8_t la = kanalsettingarray[0][0][1] & 0x07;
    //uint8_t  lb = (kanalsettingarray[0][0][1] & 0x70)>>4;
-
+   
    //u8g2.sendBuffer();
 }
 
@@ -467,32 +467,32 @@ void setMenuScreen()
    //resetRegister();
    //blink_cursorpos=0xFFFF;
    charh = u8g2.getMaxCharHeight()-1;
-
+   
    char_x = 16;
    char_y = 45;
    u8g2.setDrawColor(1);
    u8g2.setFontDirection(3);
-
+   
    // Modus
    u8g2.setFont(u8g2_font_t0_15_mr); 
    u8g2.drawStr(112,40,"Modus");
- 
+   
    //u8g2.setFont(u8g2_font_t0_15_mr); 
    u8g2.drawStr(char_x,char_y +charh,"MODELL");
    
    u8g2.setFontDirection(0);
-
+   
    // Pfeil zu Modus
-
+   
    u8g2.drawXBM(104,45,8,16,pfeil_right);
    
    //
-
+   
    //u8g2.setFont(u8g2_font_t0_15_mr);  
    
    updateMenuScreen();
    
-
+   
 }
 
 
@@ -513,7 +513,7 @@ void updateMenuScreen() // Liste der Modelle
          //u8g2.setDrawColor(1);
          //u8g2.drawStr(char_x+2,char_y + charh, ModelTable[i]);
          //u8g2.drawButtonUTF8(char_x,char_y, U8G2_BTN_BW1, 50, 1, 1, ModelTable[i]);
-
+         
       }
       else
       {
@@ -522,7 +522,7 @@ void updateMenuScreen() // Liste der Modelle
          //u8g2.setDrawColor(1);
          //u8g2.drawStr(char_x+2,char_y + charh, ModelTable[i]);
          //8g2.drawButtonUTF8(char_x,char_y, U8G2_BTN_BW0, 50, 1, 1, ModelTable[i]);
-
+         
       }
       u8g2.setDrawColor(1);
       u8g2.drawStr(char_x+2,char_y + charh-1, ModelTable[i]);
@@ -549,8 +549,8 @@ void setModellScreen() // Auswahl Funktion fuer ausgewaehltes Modell
    
    updateModellScreen();
    //u8g2.drawStr(2,char_y,SettingTable[1]);
-
-
+   
+   
 }
 
 void updateModellScreen(void)
@@ -562,7 +562,7 @@ void updateModellScreen(void)
    char_x = 28;
    while (char_y < 64)
    {
-       u8g2.setDrawColor(1);
+      u8g2.setDrawColor(1);
       u8g2.drawStr(char_x+2,char_y + charh, FunktionTable[i]);
       if(i==curr_funktion)
       {
@@ -576,7 +576,7 @@ void updateModellScreen(void)
          u8g2.drawFrame(char_x,char_y,64,14);
          u8g2.setDrawColor(1);
       }
-   
+      
       char_y += 16;
       i++;
    }
@@ -607,7 +607,7 @@ void updateFunktionScreen()
    u8g2.setFont(u8g2_font_t0_15_mr);  
    charh = u8g2.getMaxCharHeight()-1;
    char_x = 28;
-
+   
    uint8_t feldx = 110;
    uint8_t feldyO = 6;
    uint8_t feldb = 16;
@@ -621,23 +621,23 @@ void updateFunktionScreen()
    u8g2.setFont(u8g2_font_unifont_t_symbols);
    //u8g2.drawGlyph(88,char_y -4, 0x23F6);
    u8g2.drawXBM(88,char_y-2,16,8,pfeil_up);
-
-
+   
+   
    //u8g2.drawGlyph(88,char_y + 22, 0x23F7);
    u8g2.drawXBM(88,char_y + 12,16,8,pfeil_down);
-
-  // u8g2.drawGlyph(86,char_y + 6 + 36, 0x23F6);
+   
+   // u8g2.drawGlyph(86,char_y + 6 + 36, 0x23F6);
    u8g2.drawXBM(88,char_y+32 ,16,8,pfeil_up);
-
+   
    //u8g2.drawGlyph(88,char_y + 12 + 36, 0x23F7);
    u8g2.drawXBM(88,char_y+46 ,16,8,pfeil_down);
-      
+   
    u8g2.setFont(u8g2_font_t0_15_mr);  
    ////Serial.print(" curr_funktion: ");
    ////Serial.println(curr_funktion);
    
    uint8_t level = kanalsettingarray[curr_model][curr_funktion][1];
-
+   
    uint8_t expo = kanalsettingarray[curr_model][curr_funktion][2];
    ////Serial.print("updatefunktionscreen level: ");
    ////Serial.print(level);
@@ -651,16 +651,16 @@ void updateFunktionScreen()
    u8g2.print(levelO);
    u8g2.setCursor(itemtab[6], char_y + 22);
    u8g2.print(levelU);
-
+   
    u8g2.setCursor(itemtab[6], char_y + 36 + 6);
    u8g2.print(expoO);
    u8g2.setCursor(itemtab[6], char_y + 36 + 22);
    u8g2.print(expoU);
-
+   
    while (char_y < 64)
    {
       
-
+      
       if(i==curr_aktion)
       {
          u8g2.setDrawColor(1);
@@ -673,25 +673,25 @@ void updateFunktionScreen()
          u8g2.drawFrame(char_x,char_y,48,16);
          u8g2.setDrawColor(1);
       }
-       switch (curr_cursorspalte)
+      switch (curr_cursorspalte)
       {
          case 0:
          {
-
+            
          }break;
          case 1: // Level, expo up, down
          {
-
+            
          }break;
       }// switch curr_cursorspalte
-
+      
       char_y += 36;
       fkt++;
       i++;
    }
-
+   
    u8g2.setFont(u8g2_font_t0_15_mr);  
-
+   
 }// updateFunktionScreen
 
 void setAktionScreen()
@@ -715,16 +715,16 @@ void updateAktionScreen()
 {
    ////Serial.print("updateAktionScreen: curr_screen: ");
    ////Serial.println(curr_screen);
-    ////Serial.print("updateAktionScreen: curr_wert: ");
+   ////Serial.print("updateAktionScreen: curr_wert: ");
    ////Serial.println(curr_wert);
-
+   
    char_y = 4;
    uint8_t i = 0;
    u8g2.setFont(u8g2_font_t0_15_mr);  
    charh = u8g2.getMaxCharHeight()-1;
    char_x = 36;
    u8g2.drawStr(char_x,char_y + charh, AktionTable[curr_aktion]);
-
+   
    switch (curr_aktion)
    {
       case 0: // LEVEL
@@ -736,14 +736,14 @@ void updateAktionScreen()
          char_y += 24;
          uint8_t dy = 20; // Abstand 2. Zeile
          u8g2.drawStr(char_x,char_y + charh,"UP");
-        
+         
          u8g2.setCursor(char_x + 48,char_y + charh);
          u8g2.print(levelO);
-
+         
          u8g2.drawStr(char_x,char_y + charh + dy,"DOWN");
          u8g2.setCursor(char_x + 48 ,char_y + charh + dy);
          u8g2.print(levelU);
-
+         
          for (uint8_t i=0;i<2;i++)
          {
             if(i==curr_wert)
@@ -753,7 +753,7 @@ void updateAktionScreen()
                if(curr_cursorspalte == 1) // Wert einstellen
                {
                   u8g2.drawFrame(char_x + 44,char_y + i*dy-1,18,18);
-               
+                  
                }
                else
                {
@@ -761,7 +761,7 @@ void updateAktionScreen()
                   u8g2.drawFrame(char_x + 44,char_y + i*dy-1,18,18);
                   u8g2.setDrawColor(1);
                }
-
+               
             }
             else
             {
@@ -772,9 +772,9 @@ void updateAktionScreen()
                u8g2.setDrawColor(1);
             }
          }
-      
+         
       }break;
-
+         
       case 1: // EXPO
       {
          uint8_t expo = kanalsettingarray[curr_model][curr_funktion][2];
@@ -784,10 +784,10 @@ void updateAktionScreen()
          char_y += 24;
          uint8_t dy = 20; // Abstand 2. Zeile
          u8g2.drawStr(char_x,char_y + charh,"UP");
-        
+         
          u8g2.setCursor(char_x + 48,char_y + charh);
          u8g2.print(expoO);
-
+         
          u8g2.drawStr(char_x,char_y + charh + dy,"DOWN");
          u8g2.setCursor(char_x + 48 ,char_y + charh + dy);
          u8g2.print(expoU);
@@ -800,7 +800,7 @@ void updateAktionScreen()
                if(curr_cursorspalte == 1) // Wert einstellen
                {
                   u8g2.drawFrame(char_x + 44,char_y + i*dy-1,18,18);
-               
+                  
                }
                else
                {
@@ -808,7 +808,7 @@ void updateAktionScreen()
                   u8g2.drawFrame(char_x + 44,char_y + i*dy-1,18,18);
                   u8g2.setDrawColor(1);
                }
-
+               
             }
             else
             {
@@ -819,18 +819,18 @@ void updateAktionScreen()
                u8g2.setDrawColor(1);
             }
          }
-
+         
       }break;
-
-
+         
+         
    }//switch curr_aktion
-
+   
    u8g2.setFont(u8g2_font_t0_15_mr);  
 } // updateAktionScreen
 
 void setSaveScreen(void)
 {
-
+   
    u8g2.clear();
    //resetRegister();
    //blink_cursorpos=0xFFFF;
@@ -838,12 +838,12 @@ void setSaveScreen(void)
    char_y = 25;
    u8g2.setFont(u8g2_font_t0_15_mr);
    u8g2.drawStr(char_x,char_y + charh ,"Save Changes?");
-
+   
 }
 
 void setModusScreen(void)
 {
-    u8g2.clear();
+   u8g2.clear();
    //resetRegister();
    //blink_cursorpos=0xFFFF;
    char_y = 45;
@@ -857,7 +857,7 @@ void setModusScreen(void)
    u8g2.setFontDirection(0);
    
    // Pfeil Modus
-
+   
    //u8g2.setFont(u8g2_font_unifont_t_symbols);
    
    //u8g2.drawGlyph(2,55, 0x23F4);
@@ -869,11 +869,11 @@ void setModusScreen(void)
    u8g2.drawStr(char_x+2,char_y + charh ,"MODELL");
    
    u8g2.drawStr(char_x+2,char_y + charh+18 ,"SIM");
-
+   
    u8g2.drawStr(char_x+2,char_y + charh+36 ,"CALIB");
-
+   
    updateModusScreen();
-
+   
    
 }
 
@@ -905,8 +905,8 @@ void updateModusScreen(void)
          
          u8g2.drawFrame(char_x-2,char_y+18 ,56,18);
       }break;
-
-       case CALIB: // CALIB
+         
+      case CALIB: // CALIB
       {
          if(calibstatus & (1<<CALIB_START))
          {
@@ -930,22 +930,22 @@ void updateModusScreen(void)
             
             u8g2.drawFrame(char_x-2,char_y+36 ,56,18);
          }
-
+         
       }break;
-
+         
    }// switch curr_cursorspalte
-
+   
 }
 
 void refreshScreen(void)
 {
-
+   
    switch (curr_screen) 
    {
       case 0:
       {
          char buf[6];
-          u8g2.setFont(u8g2_font_t0_15_mr);
+         u8g2.setFont(u8g2_font_t0_15_mr);
          if(stopsekunde < 10)
          {
             sprintf(buf, "%2d:0%1d",stopminute,stopsekunde);
@@ -956,12 +956,12 @@ void refreshScreen(void)
          }
          
          u8g2.drawStr(50,34,buf);
-
+         
          //u8g2.setCursor(62,28);
          //u8g2.print(throttlecounter);
-
+         
          //sprintf(buf,"%1.0F", throttlesekunden);
-
+         
          u8g2.setCursor(52,48);
          u8g2.print("T:");
          sprintf(buf, "%3d",throttlesekunden);
@@ -969,14 +969,14 @@ void refreshScreen(void)
          u8g2.drawBox(66,36,26,12);
          u8g2.setDrawColor(1);
          u8g2.drawStr(66,48,buf);
-
-
+         
+         
          u8g2.sendBuffer();
-
+         
       }break;
       case 3: //FUNKTIONSCREEN
       {
-
+         
          
          if(blinkstatus)
          {
@@ -991,10 +991,10 @@ void refreshScreen(void)
          //uint8_t pos_x = blink_cursorpos & 0x00FF;
          //u8g2.drawGlyph(pos_x,pos_y, 0x23F6);
          //u8g2.drawGlyph(pos_x,pos_x, 0x23F7);
-
+         
          //u8g2.drawXBM( 10, 50, 8, 16, pfeil_l);
          //u8g2.drawXBM( 30, 50, 8, 16, pfeil_r);
-
+         
          u8g2.setFont(u8g2_font_t0_15_mr);  
       }break;
    }
@@ -1002,7 +1002,7 @@ void refreshScreen(void)
 
 void setCalibScreen(void)
 {
-
-
-
+   
+   
+   
 }  

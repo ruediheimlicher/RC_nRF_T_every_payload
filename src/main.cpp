@@ -494,7 +494,7 @@ ISR(TCA0_OVF_vect)
    
    debouncecheck = debounceTaste();
    
-  
+   
    // Interrupt-Flag löschen
    TCA0.SINGLE.INTFLAGS = TCA_SINGLE_OVF_bm;
 }
@@ -725,37 +725,37 @@ void eepromwrite(void)
    for (uint8_t i = 0;i<NUM_SERVOS;i++)
    {
       /*
-      Serial.print("potgrenzearray raw i:\t");
-      Serial.print(i);
-      Serial.print("\t");
-      Serial.write(taskarray[i]);
-      Serial.print("\t");
-      Serial.print("potgrenze HI:\t");
-      Serial.print(potgrenzearray[i][0]);
-      Serial.print("\t");
-      Serial.print("potgrenze LO:\t");
-      Serial.print(potgrenzearray[i][1]);
-      Serial.print("\t");
-      Serial.print("servomitte:\t");
-      Serial.print(servomittearray[i]);
-      Serial.print("\t");
-      Serial.print("adresse U:\t");
-      uint8_t addresseU_LO = 2*(i + EEPROMINDEX_U);
-      Serial.print(addresseU_LO);
-      Serial.print("\t");
-      Serial.print("adresse H:\t");
-      uint8_t addresseU_HI = 2*(i + EEPROMINDEX_U)+1;
-      Serial.print(addresseU_HI);
-      
-      Serial.print(" *\t");
-      Serial.print("level:\t");
-      Serial.print(kanalsettingarray[curr_model][i][1]);
-      Serial.print(" \t");
-      Serial.print("expo:\t");
-      Serial.print(kanalsettingarray[curr_model][i][2]);
-      
-      Serial.print("\n");
-      */
+       Serial.print("potgrenzearray raw i:\t");
+       Serial.print(i);
+       Serial.print("\t");
+       Serial.write(taskarray[i]);
+       Serial.print("\t");
+       Serial.print("potgrenze HI:\t");
+       Serial.print(potgrenzearray[i][0]);
+       Serial.print("\t");
+       Serial.print("potgrenze LO:\t");
+       Serial.print(potgrenzearray[i][1]);
+       Serial.print("\t");
+       Serial.print("servomitte:\t");
+       Serial.print(servomittearray[i]);
+       Serial.print("\t");
+       Serial.print("adresse U:\t");
+       uint8_t addresseU_LO = 2*(i + EEPROMINDEX_U);
+       Serial.print(addresseU_LO);
+       Serial.print("\t");
+       Serial.print("adresse H:\t");
+       uint8_t addresseU_HI = 2*(i + EEPROMINDEX_U)+1;
+       Serial.print(addresseU_HI);
+       
+       Serial.print(" *\t");
+       Serial.print("level:\t");
+       Serial.print(kanalsettingarray[curr_model][i][1]);
+       Serial.print(" \t");
+       Serial.print("expo:\t");
+       Serial.print(kanalsettingarray[curr_model][i][2]);
+       
+       Serial.print("\n");
+       */
       
       
       EEPROM.update(2*(i + EEPROMINDEX_U),(potgrenzearray[i][1] & 0x00FF)); // lo byte
@@ -1136,11 +1136,11 @@ void setup()
    pinMode(PPM_DIR_PIN, INPUT_PULLUP);
    pinMode(PPM_DATA_PIN, OUTPUT);
    digitalWrite(PPM_DATA_PIN,LOW);
-
+   
    pinMode(MS_PIN, OUTPUT);
    digitalWrite(MS_PIN,HIGH);
-
-
+   
+   
    
    //attachInterrupt(digitalPinToInterrupt(PPM_PIN), ppmISR, RISING);
    
@@ -1226,14 +1226,14 @@ void setup()
    radio.setChannel(124);
    //radio.setAutoAck(false);
    //radio.setDataRate(RF24_250KBPS);    // The lowest data rate value for more stable communication  | Daha kararlı iletişim için en düşük veri hızı.
-   radio.setDataRate(RF24_2MBPS); // Set the speed of the transmission to the quickest available
+   radio.setDataRate(RF24_1MBPS); // Set the speed of the transmission to the quickest available
    
    
    radio.setPALevel(RF24_PA_MAX);      // Output power is set for maximum range  |  Çıkış gücü maksimum menzil için ayarlanıyor.
    
    radio.setPALevel(RF24_PA_MIN); 
    radio.setPALevel(RF24_PA_MAX); 
-   radio.enableDynamicPayloads();
+   //radio.enableDynamicPayloads();
    radio.enableAckPayload();
    radio.setRetries(0, 0);
    //radio.stopListening();              // Start the radio comunication for Transmitter | Verici için sinyal iletişimini başlatır.
@@ -1316,19 +1316,19 @@ void setup()
    setupDebounce();
    
    
-   //Serial.print("\n"); 
-   // for (uint8_t i=0;i<NUM_SERVOS;i++)
+   Serial.print("\n"); 
+   for (uint8_t i=0;i<NUM_SERVOS;i++)
    {
-      //Serial.print(adcpinarray[i]);
+      //Serial.print(adcpinarrayA[i]);
       //Serial.print("\t");
-      //Serial.print(servomittearray[i]);
-      //Serial.print("\t");
+      Serial.print(servomittearray[i]);
+      Serial.print("\t");
       
-      //kanalsettingarray[0][i][1] = 0x11; // level
-      //kanalsettingarray[0][i][2] = 0x33; // expo
+      kanalsettingarray[0][i][1] = 0x0; // level
+      kanalsettingarray[0][i][2] = 0x0; // expo
    }
    
-   //Serial.print("\n");
+   Serial.print("\n");
    
    
 } // setup
@@ -1486,9 +1486,9 @@ void loop()
       tastaturwert = analogRead(TASTATUR_PIN)/2;
       if(debounceTaste)
       {
-          tastenfunktion(tastaturwert);
+         tastenfunktion(tastaturwert);
       }
-     
+      
       
    }
    
@@ -1508,7 +1508,7 @@ void loop()
          blinkstatus = 1;
          if(throttlesekunden > 250)
          {
-            tone(BUZZPIN,1000);
+            //tone(BUZZPIN,1000);
             
          }
          
@@ -1529,7 +1529,7 @@ void loop()
       {
          //digitalWrite(MS_PIN,HIGH);
          blinkstatus = 0;
-         noTone(BUZZPIN);
+         //noTone(BUZZPIN);
       }
       if(curr_screen == 5)
       {
@@ -1558,7 +1558,7 @@ void loop()
             //Serial.print("T 1");   
             switch (curr_screen)
             {
-                case 0:
+               case 0:
                {
                   
                   //startaltitude = altitude;
@@ -1571,7 +1571,7 @@ void loop()
                   updateHomeScreen();
                   
                }break;
-
+                  
                case 1: //MENUSCREEN
                {
                   curr_screen = 5;
@@ -2409,25 +2409,25 @@ void loop()
          {
             
          }break;
-
+            
          case ANZEIGE_DATA:
+         {
+            for (int i = 0; i < NUM_SERVOS; i++)
             {
-               for (int i = 0; i < NUM_SERVOS; i++)
-               {
-                  Serial.print(potwertarray[i]);
-                  Serial.print(" ");
-                  
-               }
-               Serial.print("\tYAW\t");
-               Serial.print(data.yaw);
-               Serial.print("\tPITCH\t");
-               Serial.print(data.pitch);
-               Serial.print("\tROLL\t");
-               Serial.print(data.roll);
-               Serial.print("\tTHROTTLE\t");
-               Serial.print(data.throttle);
-               Serial.print("\n");
-            }break;
+               Serial.print(potwertarray[i]);
+               Serial.print(" ");
+               
+            }
+            Serial.print("\tYAW\t");
+            Serial.print(data.yaw);
+            Serial.print("\tPITCH\t");
+            Serial.print(data.pitch);
+            Serial.print("\tROLL\t");
+            Serial.print(data.roll);
+            Serial.print("\tTHROTTLE\t");
+            Serial.print(data.throttle);
+            Serial.print("\n");
+         }break;
             
          case ANZEIGE_ADC:
          {
@@ -2535,26 +2535,26 @@ void loop()
       {
          batteriespannung = batteriespannung + faktor * (batteriespannungraw - batteriespannung);
       }
-
+      
       //Serial.print("\t");
       //Serial.print(batteriespannung);
       //Serial.print("\n");
       UBatt = (batteriespannung) / 154;
-
-     
-     flyerbatteriespannung = float(ackData[3]);
+      
+      
+      flyerbatteriespannung = float(ackData[3]);
       //Serial.print("\t");
       //Serial.print(flyerbatteriespannung);
       //Serial.print("\t");
       //flyerbatteriespannung = constrain(flyerbatteriespannung,60,240);
       // y = 0.0137x + 5.1273
-
-     // UFlyerBatt = 0.0141 * flyerbatteriespannung + 5.0434;
-     UFlyerBatt = flyerbatteriespannung / 0x47  + 5;
-
+      
+      // UFlyerBatt = 0.0141 * flyerbatteriespannung + 5.0434;
+      UFlyerBatt = flyerbatteriespannung / 0x47  + 5;
+      
       //Serial.print(UFlyerBatt);
       //Serial.print("\n");
-
+      
       flyerbatterieanzeige = fmap(flyerbatteriespannung, 60.0, 240.0, 0, 44.0);;
       
       
@@ -2835,7 +2835,7 @@ void loop()
          
          uint16_t mitte = servomittearray[i];
          //uint8_t levelwert = kanalsettingarray[curr_model][i][1]; // element 1, levelarray
-
+         
          levelwertarray[i] = kanalsettingarray[curr_model][i][1]; 
          // levelwert   faktor
          //    0             8/8
@@ -2851,6 +2851,9 @@ void loop()
          
          // expowert ev. ungleich fuer richtung
          expowert = kanalsettingarray[curr_model][i][2]; // element2, expoarray
+
+         
+
          expowertarray[i] = kanalsettingarray[curr_model][i][2];
          expowerta = expowert & 0x07;
          expowertb = (expowert & 0x70)>>4;
@@ -2931,26 +2934,26 @@ void loop()
       //Serial.println(data.yaw);
       // if(curr_model == 0)
       if(!(calibstatus &(1<<CALIB_START) )  ) // bei calib soll roll ausgegeben werden
-      if(curr_model == 0)
-      {
-      //   potgrenzearray[ROLL][0] = servomittearray[ROLL];
-      //   potgrenzearray[ROLL][1] = servomittearray[ROLL];
-      }
+         if(curr_model == 0)
+         {
+            //   potgrenzearray[ROLL][0] = servomittearray[ROLL];
+            //   potgrenzearray[ROLL][1] = servomittearray[ROLL];
+         }
       
       //data.roll = Border_Mapvar255(ROLL,potwertarray[ROLL],potgrenzearray[ROLL][1],servomittearray[ROLL],potgrenzearray[ROLL][0],false);
       
       // teensy
-
+      
       if(curr_model > 0)
-         {
-            data.roll = Border_Mapvar255(ROLL, potwertarray[ROLL], potgrenzearray[ROLL][1], servomittearray[ROLL], potgrenzearray[ROLL][0], false);
-         }
-         else
-         {
-            data.roll =  127;
-         }
+      {
+         data.roll = Border_Mapvar255(ROLL, potwertarray[ROLL], potgrenzearray[ROLL][1], servomittearray[ROLL], potgrenzearray[ROLL][0], false);
+      }
+      else
+      {
+         data.roll =  127;
+      }
       // tensy
-
+      
       
       //uint16_t throttlemitte = servomittearray[THROTTLE];
       //data.throttle = Throttle_Map(potwertarray[THROTTLE],throttlemitte, POTHI,0,255, false );   
@@ -2989,15 +2992,15 @@ void loop()
                pressureint = (ackData[1] << 8) | ackData[2];
                pressurefloat = float(pressureint) / 10; //
                altitude = getAltitude(pressurefloat,temperaturfloat);
-
+               
                altitudeint = altitude;
-
+               
                if(startaltitudeint)
                {
                   diffaltitudeint = altitudeint - startaltitudeint;
                   //updateHomeScreen();
                }
-
+               
                /*
                 //Serial.print("ACK erhalten: ");
                 //Serial.print("\t");
@@ -3025,9 +3028,9 @@ void loop()
             errcounter++;
          }
       }
-         else
-         {
-            digitalWrite(MS_PIN,LOW);
-         }
+      else
+      {
+         digitalWrite(MS_PIN,LOW);
+      }
    }
 }
